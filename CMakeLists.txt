@@ -3,4 +3,4 @@ project(optimisation)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(optimisation main.cpp)
+add_executable(optimisation main.cpp Reader.cpp Reader.h)
