@@ -3,4 +3,5 @@ project(optimisation)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(optimisation main.cpp Tournee.h)
+add_executable(optimisation main.cpp Reader.h Tournee.h)
+

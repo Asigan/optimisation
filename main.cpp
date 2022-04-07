@@ -2,6 +2,7 @@
 #include <vector>
 #include "Client.hpp"
 #include "Tournee.h"
+#include "Reader.h"
 using namespace std;
 int main() {
     Client depot = Client(0, 0, 0, 0);
@@ -52,7 +53,6 @@ int main() {
     t.deleteClient(1);
     cout << t.toString() << std::endl;
     std::cout << t.getQuantiteRestante() << std::endl;
-    double value = t.getDistanceHeuristique();
     std::cout << t.getDistanceHeuristique() << std::endl;
 
     return 0;

@@ -1,5 +1,6 @@
-#ifndef OPTIMISATION_CLIENT_HPP
-#define OPTIMISATION_CLIENT_HPP
+#ifndef OPTIMISATION_CLIENT_H
+#define OPTIMISATION_CLIENT_H
+
 
 #include <string>
 #include <valarray>
@@ -40,4 +41,6 @@ private:
     int y;
     int q;
 };
-#endif //OPTIMISATION_CLIENT_HPP
+
+#endif //OPTIMISATION_CLIENT_H
+
