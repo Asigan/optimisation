@@ -10,11 +10,6 @@ int main() {
     Client c2 = Client(2, 1, 3, 4);
     Client c3 = Client(3, 2, 4, 4);
 
-    /*std::cout << c1.getDistance(c2) << std::endl;
-    std::cout << c1.getX() << std::endl;
-    std::cout << c1.getY() << std::endl;
-    std::cout << c1.getQuantity() << std::endl;*/
-
     vector<Client> clients =  vector<Client>();
     clients.push_back(depot);
     clients.push_back(c1);
