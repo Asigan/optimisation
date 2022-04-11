@@ -137,6 +137,10 @@ public:
         return res;
     }
 
+    bool contains(int client){
+        return successeurs.count(client) > 0;
+    }
+
 private:
     unordered_map<int, int> predecesseurs;
     unordered_map<int, int> successeurs;

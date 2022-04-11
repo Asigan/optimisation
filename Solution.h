@@ -23,9 +23,10 @@ public:
     }
     virtual void goToNeighbour();
 
+protected:
+    vector<Tournee> tournees;
 
 private:
-    vector<Tournee> tournees;
     double distance;
 
     int nbCamionsMin(vector<Client> clients){

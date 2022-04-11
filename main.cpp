@@ -1,10 +1,12 @@
 #include <iostream>
 #include <vector>
+#include <random>
 #include "Client.hpp"
 #include "Tournee.h"
 #include "Reader.h"
 using namespace std;
 int main() {
+    /*
     Client depot = Client(0, 0, 0, 0);
     Client c1 = Client(1, 1, 1, 4);
     Client c2 = Client(2, 1, 3, 4);
@@ -49,6 +51,6 @@ int main() {
     cout << t.toString() << std::endl;
     std::cout << t.getQuantiteRestante() << std::endl;
     std::cout << t.getDistanceHeuristique() << std::endl;
-
+    */
     return 0;
 }
