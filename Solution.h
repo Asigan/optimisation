@@ -4,18 +4,13 @@
 
 #ifndef OPTIMISATION_SOLUTION_H
 #define OPTIMISATION_SOLUTION_H
-using namespace std;
-#include "Tournee.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <random>
-#include <iostream>
-#include <chrono>
 
+#include <chrono>
+#include "Tournee.h"
+
+using namespace std;
 class Solution{
 public:
-
     Solution(vector<Client> clients){
         std::default_random_engine generator;
         generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
@@ -63,11 +58,11 @@ public:
     string toString(){
         string res = "";
         int cmpt = 0;
-        for(auto tournee = tournees.begin(); tournee != tournees.end(); ++tournee){
+        for(auto & tournee : tournees){
             cmpt++;
             res += to_string(cmpt) + ": ";
-            res += tournee->toString();
-            res += "  " + to_string( tournee->getQuantiteRestante()) + "\n";
+            res += tournee.toString();
+            res += "  " + to_string( tournee.getQuantiteRestante()) + "\n";
         }
         return res;
     }
@@ -77,30 +72,40 @@ public:
         auto res = vector<int>();
         for(int i=1; i<clients.size(); i++){
             client_in_tournees = false;
-            for(auto tournee = tournees.begin(); tournee != tournees.end(); ++tournee){
-                vector<int> uneTournee = tournee->returnTournee();
+            for(auto & tournee : tournees){
+                vector<int> uneTournee = tournee.returnTournee();
                 if(count(uneTournee.begin(),uneTournee.end(),  i) != 0){
                     client_in_tournees = true;
                     break;
                 }
             }
-            if(client_in_tournees == false) res.push_back(i);
+            if(!client_in_tournees) res.push_back(i);
         }
         return res;
     }
 
-
-    auto getSolution(){
-
+    void echangeIntra(int tournee, int c1, int c2){
+        cout << "Tournee numero " << tournee+1 << endl;
+        cout << "Echange de " << c1 << " avec " << c2 << endl;
+        tournees[tournee].switchClients(c1, c2);
     }
 
-    
-    //virtual void goToNeighbour();
+    Tournee getTournee(int tournee){
+        return tournees[tournee];
+    }
 
-protected:
-    vector<Tournee> tournees;
+    int getNbClients(){
+        int nbClients = 0;
+        for(Tournee tournee : tournees){
+            nbClients += tournee.returnTournee().size();
+        }
+        return nbClients;
+    }
+
+    int getNbTournees(){return tournees.size();}
 
 private:
+    vector<Tournee> tournees;
     double distance;
 
     int nbCamionsMin(vector<Client> clients){
@@ -112,5 +117,6 @@ private:
         }
         return floor(tot/100)+1;
     }
+
 };
 #endif //OPTIMISATION_SOLUTION_H

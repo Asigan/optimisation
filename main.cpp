@@ -2,19 +2,24 @@
 #include <vector>
 #include <random>
 #include "Client.hpp"
-#include "Tournee.h"
 #include "Reader.h"
 #include "Solution.h"
+#include "VoisinEchange.h"
+#include "Voisins.h"
 
 using namespace std;
 int main() {
     Reader r = Reader();
-    std::vector<Client> clients = r.lectureFichier("..\\Tests\\A3205.txt");
-    Solution s = Solution(clients);
-    std::cout << s.toString() << endl;
-    auto missing_clients = s.checkAllClientsAreInSolution(clients);
-    for(auto mc = missing_clients.begin(); mc != missing_clients.end(); ++mc){
-        cout << to_string(*mc) << " - ";
-    }
+    vector<Client> clients = r.lectureFichier("..\\Tests\\A3205.txt");
+    Solution st = Solution(clients);
+    Solution* s;
+    s = &st;
+    cout << s->toString() << endl;
+
+    Voisins v;
+    auto *ve = new VoisinEchange();
+    v.getVoisinAleatoire(s, ve);
+    cout << s->toString() << endl;
+
     return 0;
 }
