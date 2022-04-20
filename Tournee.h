@@ -40,6 +40,10 @@ public:
         }
     }
 
+    void insert_end(int insertedC){
+        insert(insertedC, predecesseurs[0]);
+    }
+
     void switchClients(int c1, int c2){
         if(successeurs.count(c1) > 0
                 && successeurs.count(c2) > 0
@@ -129,12 +133,17 @@ public:
 
     vector<int> returnTournee(){
         vector<int> res = std::vector<int>();
+        res.push_back(0);
         int client = 0;
-        while(successeurs[client] != 0){
+        do {
             client = successeurs[client];
             res.push_back(client);
-        }
+        }while(successeurs[client] != 0);
         return res;
+    }
+
+    bool contains(int client){
+        return successeurs.count(client) > 0;
     }
 
 private:
