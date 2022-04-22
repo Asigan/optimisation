@@ -7,12 +7,13 @@
 using namespace std;
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 #include "Client.hpp"
 
 
 class Tournee{
 public:
-    Tournee(std::vector<Client>& _clients) {
+    Tournee(std::vector<Client> _clients) {
         predecesseurs = std::unordered_map<int, int>();
         successeurs = std::unordered_map<int, int>();
         quantite_restante = 100;
@@ -21,7 +22,6 @@ public:
         predecesseurs.emplace(0, 0);
         successeurs.emplace(0, 0);
     }
-
     void insert(int insertedC, int clientBefore){
         if(insertedC > clients.size() || quantite_restante < clients[insertedC].getQuantity()){
             // TODO: ajouter le client dans la liste des clients
@@ -135,15 +135,19 @@ public:
         vector<int> res = std::vector<int>();
         res.push_back(0);
         int client = 0;
-        do {
+        while(successeurs[client] != 0) {
             client = successeurs[client];
             res.push_back(client);
-        }while(successeurs[client] != 0);
+        }
         return res;
     }
 
     bool contains(int client){
         return successeurs.count(client) > 0;
+    }
+
+    vector<Client> getClients(){
+        return clients;
     }
 
 private:

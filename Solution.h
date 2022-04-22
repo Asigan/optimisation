@@ -30,8 +30,8 @@ public:
         int espaceLibre = 100 -  100/k;
 
         // Attribution des clients aux camions (clients après clients, choix du camion par aléatoire)
-        std::uniform_int_distribution<int> distribution_camions(0, nbCamions);
-        std::uniform_int_distribution<int> distribution_clients(0, clients.size());
+        std::uniform_int_distribution<int> distribution_camions(0, nbCamions-1);
+        std::uniform_int_distribution<int> distribution_clients(0, clients.size()-1);
         bool client_non_traite;
         int camion_pour_client;
         int client_before;
@@ -56,7 +56,7 @@ public:
                 }
             }
         }
-
+        computeTotalDistance();
 
     }
 
@@ -89,11 +89,21 @@ public:
         return res;
     }
 
-
-    auto getSolution(){
-
+    int getNbTournees(){
+        return tournees.size();
     }
 
+    Tournee getTournee(int num){
+        return tournees[num];
+    }
+
+    auto getTournees(){
+        return tournees;
+    }
+
+    double getDistance(){
+        return distance;
+    }
     
     //virtual void goToNeighbour();
 
@@ -102,7 +112,12 @@ protected:
 
 private:
     double distance;
-
+    void computeTotalDistance(){
+        distance = 0;
+        for(auto t=tournees.begin(); t!=tournees.end(); ++t){
+            distance += t->getDistanceHeuristique();
+        }
+    }
     int nbCamionsMin(vector<Client> clients){
         int k = 0;
         int tot = 0;
