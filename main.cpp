@@ -5,9 +5,11 @@
 #include "Tournee.h"
 #include "Reader.h"
 #include "Solution.h"
+#include "Interface.h"
+
 
 using namespace std;
-int main() {
+int main(int argc, char* args[]) {
     Reader r = Reader();
     std::vector<Client> clients = r.lectureFichier("..\\Tests\\A3205.txt");
     Solution s = Solution(clients);
@@ -16,5 +18,10 @@ int main() {
     for(auto mc = missing_clients.begin(); mc != missing_clients.end(); ++mc){
         cout << to_string(*mc) << " - ";
     }
+
+    auto i = Interface(clients);
+    i.afficher(s);
+
+
     return 0;
 }
