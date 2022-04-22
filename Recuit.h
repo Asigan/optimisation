@@ -12,16 +12,16 @@
 
 using namespace std;
 
-class Recuit : Solution {
+class Recuit{
 public:
-
+    void echangeClients(Solution* s){
+        Voisins v;
+        auto *ve = new VoisinEchange();
+        v.getVoisinAleatoire(s, ve);
+    }
 
 private:
-    void echangeClients(){
-        Voisins v;
-        VoisinEchange ve;
-        v.getVoisinAleatoire(ve);
-    }
+
 };
 
 #endif //OPTIMISATION_RECUIT_H

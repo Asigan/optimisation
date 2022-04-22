@@ -90,6 +90,13 @@ public:
         tournees[tournee].switchClients(c1, c2);
     }
 
+    void echangeInter(int tournee1, int tournee2, int c1, int c2){
+        cout << "Tournee numero " << tournee1+1 << " et " << tournee2+1 << endl;
+        cout << "Echange de " << c1 << " avec " << c2 << endl;
+        tournees[tournee1].replaceClient(c2, c1);
+        tournees[tournee2].replaceClient(c1, c2);
+    }
+
     Tournee getTournee(int tournee){
         return tournees[tournee];
     }

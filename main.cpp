@@ -6,6 +6,7 @@
 #include "Solution.h"
 #include "VoisinEchange.h"
 #include "Voisins.h"
+#include "Recuit.h"
 
 using namespace std;
 int main() {
@@ -16,9 +17,8 @@ int main() {
     s = &st;
     cout << s->toString() << endl;
 
-    Voisins v;
-    auto *ve = new VoisinEchange();
-    v.getVoisinAleatoire(s, ve);
+    Recuit recuit;
+    recuit.echangeClients(s);
     cout << s->toString() << endl;
 
     return 0;
