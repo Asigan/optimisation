@@ -113,6 +113,12 @@ public:
         }
     }
 
+    void replaceClient(int insertedC, int deletedC){
+        int clientBefore = predecesseurs[deletedC];
+        deleteClient(deletedC);
+        insert(insertedC, clientBefore);
+    }
+
     int getQuantiteRestante(){
         return quantite_restante;
     }

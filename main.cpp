@@ -2,11 +2,10 @@
 #include <vector>
 #include <random>
 #include "Client.hpp"
-#include "Tournee.h"
 #include "Reader.h"
 #include "Solution.h"
 #include "Interface.h"
-
+#include "Recuit.h"
 
 using namespace std;
 int main(int argc, char* args[]) {
@@ -22,6 +21,10 @@ int main(int argc, char* args[]) {
     auto i = Interface(clients);
     i.afficher(s);
 
+    Recuit recuit;
+    recuit.trouverVoisin(&s);
+    cout << s.toString() << endl;
+    i.afficher(s);
 
     return 0;
 }

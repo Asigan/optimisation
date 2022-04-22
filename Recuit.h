@@ -8,47 +8,37 @@
 #include <random>
 #include "Solution.h"
 #include "Voisins.h"
+#include "VoisinEchange.h"
+#include "VoisinInsertion.h"
 
 using namespace std;
 
-class Recuit : Solution {
+class Recuit{
 public:
-
+    void trouverVoisin(Solution* s){
+        random_device rd;
+        uniform_int_distribution<int> t(0, 1);
+        int r = t(rd);
+        if(r == 0){
+            echangeClients(s);
+        }else{
+            insertionClient(s);
+        }
+    }
 
 private:
-    void echangeClientsIntra(){
-        int nbClients = getNbClients();
-        int tournee, c1, c2;
-        bool ensemble = false;
+    void echangeClients(Solution* s){
         Voisins v;
-
-        // On choisit une tournée aléatoire
-        random_device rd;
-        uniform_int_distribution<int> t(0, tournees.size()-1);
-        tournee = t(rd);
-        Tournee tourneeEnCours = tournees[tournee];
-
-        // On choisit dans cette tournée 2 clients aléatoires
-        vector<int> listeTournee = tourneeEnCours.returnTournee();
-        uniform_int_distribution<int> c(0, listeTournee.size()-1);
-        c1 = c(rd);
-        while((c2=c(rd)) == c1);
-
-        // On effectue l'opération de voisinage correspondant
-        v.echangeClientsIntra(tourneeEnCours, listeTournee[c1], listeTournee[c2]);
+        auto *ve = new VoisinEchange();
+        v.getVoisinAleatoire(s, ve);
     }
 
-    void echangeClientsInter(){
-
+    void insertionClient(Solution* s){
+        Voisins v;
+        auto *ve = new VoisinInsertion();
+        v.getVoisinAleatoire(s, ve);
     }
 
-    int getNbClients(){
-        int nbClients = 0;
-        for(Tournee tournee : tournees){
-            nbClients += tournee.returnTournee().size();
-        }
-        return nbClients;
-    }
 };
 
 #endif //OPTIMISATION_RECUIT_H

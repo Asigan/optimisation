@@ -5,28 +5,27 @@
 #ifndef OPTIMISATION_VOISINS_H
 #define OPTIMISATION_VOISINS_H
 
-#include <random>
-#include "Tournee.h"
-#include "Client.hpp"
+#include "Solution.h"
+#include "TypeVoisin.h"
 
 using namespace std;
 
 class Voisins{
 public:
-
-    void echangeClientsIntra(Tournee& t, int c1, int c2){
-
+    void getVoisinAleatoire(Solution* s, TypeVoisin* v){
+        v->VoisinAleatoire(s);
     }
 
-    void echangeClientsInter(Tournee& t1, Tournee& t2, int c1, int c2){
-
+    void getListeVoisins(Solution* s, TypeVoisin* v){
+        v->ListeVoisins(s);
     }
 
-    //Insertion décalage ABCDEF -> AEBCDF
+    //TO DO :
+        //Insertion décalage ABCDEF -> AEBCDF
 
-    //Inversion ABCDEF -> AEDCBF
+        //Inversion ABCDEF -> AEDCBF
 
-    //Inversion 2-opt ABCDEF -> ABFEDC
+        //Inversion 2-opt ABCDEF -> ABFEDC
 
 private:
 
