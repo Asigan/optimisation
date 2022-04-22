@@ -9,18 +9,35 @@
 #include "Solution.h"
 #include "Voisins.h"
 #include "VoisinEchange.h"
+#include "VoisinInsertion.h"
 
 using namespace std;
 
 class Recuit{
 public:
+    void trouverVoisin(Solution* s){
+        random_device rd;
+        uniform_int_distribution<int> t(0, 1);
+        int r = t(rd);
+        if(r == 0){
+            echangeClients(s);
+        }else{
+            insertionClient(s);
+        }
+    }
+
+private:
     void echangeClients(Solution* s){
         Voisins v;
         auto *ve = new VoisinEchange();
         v.getVoisinAleatoire(s, ve);
     }
 
-private:
+    void insertionClient(Solution* s){
+        Voisins v;
+        auto *ve = new VoisinInsertion();
+        v.getVoisinAleatoire(s, ve);
+    }
 
 };
 

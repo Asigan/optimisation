@@ -97,6 +97,20 @@ public:
         tournees[tournee2].replaceClient(c1, c2);
     }
 
+    void insertionIntra(int tournee, int c1, int c2){
+        cout << "Tournee numero " << tournee+1 << endl;
+        cout << "Insertion de " << c1 << " devant " << c2 << endl;
+        tournees[tournee].deleteClient(c1);
+        tournees[tournee].insert(c1, c2);
+    }
+
+    void insertionInter(int tournee1, int tournee2, int c1, int c2){
+        cout << "Tournee numero " << tournee1+1 << " et " << tournee2+1 << endl;
+        cout << "Insertion de " << c1 << " devant " << c2 << endl;
+        tournees[tournee1].deleteClient(c1);
+        tournees[tournee2].insert(c1, c2);
+    }
+
     Tournee getTournee(int tournee){
         return tournees[tournee];
     }

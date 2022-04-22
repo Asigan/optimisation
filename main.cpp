@@ -4,8 +4,6 @@
 #include "Client.hpp"
 #include "Reader.h"
 #include "Solution.h"
-#include "VoisinEchange.h"
-#include "Voisins.h"
 #include "Recuit.h"
 
 using namespace std;
@@ -18,7 +16,7 @@ int main() {
     cout << s->toString() << endl;
 
     Recuit recuit;
-    recuit.echangeClients(s);
+    recuit.trouverVoisin(s);
     cout << s->toString() << endl;
 
     return 0;
