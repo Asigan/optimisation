@@ -59,6 +59,7 @@ public:
     }
     void afficher(Solution s){
         tournees = s.getTournees();
+        SDL_SetRenderDrawColor( window_renderer, 120, 100, 110, 255 );
         SDL_RenderClear( window_renderer );
 
         clients = tournees.begin()->getClients();
