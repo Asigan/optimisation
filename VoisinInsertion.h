@@ -10,9 +10,13 @@
 
 using namespace std;
 
+
+
 class VoisinInsertion : public TypeVoisin{
 public:
-    void VoisinAleatoire(Solution* s) override{
+    using TypeVoisin::TypeVoisin;
+
+    TypeVoisin VoisinAleatoire(Solution* s) override{
         int t1, t2;
         // On choisit deux tournées aléatoires
         random_device rd;
@@ -24,11 +28,31 @@ public:
         }else{
             VoisinInter(s, t1, t2);
         }
+        return TypeVoisin();
     }
 
+    TypeVoisin getVoisin(Solution* s){
+        ClientTournee c1 = this->getC1();
+        ClientTournee c2 = this->getC2();
+        if(c1.getTournee() == c2.getTournee()){
+            s->insertionIntra(c1.getTournee(), c1.getIndex(), c2.getIndex());
+        }
+        else{
+            s->insertionInter(c1.getTournee(), c2.getTournee(), c1.getIndex(), c2.getIndex());
+            this->setTourneePourC1(c2.getTournee());
+        }
+    }
+
+    size_t getHash() const{
+        // le plus simple de tous les hashs pour tester
+        return 1000000000 ^ this->getC2().getTournee()*1000000  ^ this->getC1().getIndex()*1000 ^ this->getC2().getIndex();
+    }
+
+
 private:
-    void VoisinIntra(Solution* s, int t){
-        int i1, i2;
+    TypeVoisin VoisinIntra(Solution* s, int t){
+        return VoisinInter(s, t, t);
+        /*int i1, i2;
         random_device rd;
 
         // On get la tournee correspondante
@@ -46,9 +70,10 @@ private:
         
         // On effectue l'opération de voisinage correspondant
         s->insertionIntra(t, listeTournee[i1], listeTournee[i2]);
+        return TypeVoisin();*/
     }
 
-    void VoisinInter(Solution* s, int t1, int t2){
+    TypeVoisin VoisinInter(Solution* s, int t1, int t2){
         int i1, i2;
         random_device rd;
 
@@ -63,11 +88,36 @@ private:
         uniform_int_distribution<int> c1(0, listeTournee1.size()-1);
         uniform_int_distribution<int> c2(0, listeTournee2.size()-1);
         i1 = c1(rd);
-        i2 = c2(rd);
+        //i2 = c2(rd);
+        do{
+            i2 = c2(rd);
+        }while(listeTournee1[i1] == listeTournee2[i2]);
+        //while((i2=c2(rd)) == i1);
 
         // On effectue l'opération de voisinage correspondant
-        s->insertionInter(t1, t2, listeTournee1[i1], listeTournee2[i2]);
+
+        return realiserInsert(s, t1, t2, listeTournee1[i1], listeTournee2[i2]);
     }
 
+    TypeVoisin realiserInsert(Solution* s, int t1, int t2, int c1, int c2){
+        //const auto ms = make_shared<ClientTournee>;
+        using ms = shared_ptr<ClientTournee> (*) (ClientTournee);
+
+        auto tournee1 = s->getTournee(t1);
+        int predecesseur = tournee1.getClientBefore(c1);
+        s->insertionInter(t1, t2, c1, c2);
+        weak_ptr<ClientTournee> ct1 = make_shared<ClientTournee>(ClientTournee(c1));
+        weak_ptr<ClientTournee> ct2 = make_shared<ClientTournee>(ClientTournee(predecesseur));
+        return VoisinInsertion();
+    }
+
+};
+template<>
+struct std::hash<VoisinInsertion>
+{
+    size_t operator()(const VoisinInsertion& v) const
+    {
+        return v.getHash();
+    }
 };
 #endif //OPTIMISATION_VOISININSERTION_H

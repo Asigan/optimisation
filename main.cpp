@@ -26,5 +26,27 @@ int main(int argc, char* args[]) {
     cout << s.toString() << endl;
     i.afficher(s);
 
+
+    // test du hash qui doit permettre de retrouver immédiatement deux mouvements identiques (v1 et v3 sont identiques)
+    Client c1 = Client(0, 1, 1, 1);
+    Client c2 = Client(1, 2, 2, 2);
+    Client c3 = Client(2, 3, 3, 3);
+    Client c4 = Client(3, 4, 4,4);
+
+    auto s_c1 = make_shared<ClientTournee>(ClientTournee(c1, 0));
+    auto s_c2 = make_shared<ClientTournee>(ClientTournee(c2, 0));
+    auto s_c3 = make_shared<ClientTournee>(ClientTournee(c3, 0));
+    auto s_c4 = make_shared<ClientTournee>(ClientTournee(c4, 0));
+    auto v1 = VoisinInsertion(s_c1, s_c3);
+    auto v2 = VoisinInsertion(s_c1, s_c2);
+    auto v3 = VoisinInsertion(s_c1, s_c3);
+
+    unordered_map<VoisinInsertion, int> v_dico;
+    v_dico.emplace(v1, 1);
+    v_dico.emplace(v2, 2);
+    cout << to_string(v_dico[v1]) << endl;
+    cout << to_string(v_dico[v2]) << endl;
+    cout << to_string(v_dico[v3]) << endl;
+
     return 0;
 }

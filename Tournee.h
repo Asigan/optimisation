@@ -156,6 +156,10 @@ public:
         return clients;
     }
 
+    int getClientBefore(int client){
+        return predecesseurs[client];
+    }
+
 private:
     unordered_map<int, int> predecesseurs;
     unordered_map<int, int> successeurs;

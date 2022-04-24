@@ -12,7 +12,12 @@ using namespace std;
 
 class VoisinEchange : public TypeVoisin{
 public:
-    void VoisinAleatoire(Solution* s) override{
+    VoisinEchange(){}
+
+    // op ternaires pour assurer que c1 est le plus petit (puisque symétrique)
+    explicit VoisinEchange(shared_ptr<ClientTournee> c1, shared_ptr<ClientTournee> c2) : TypeVoisin(c1->getIndex()<c2->getIndex()?c1:c2, c1->getIndex()<c2->getIndex()?c2:c1){ }
+
+    TypeVoisin VoisinAleatoire(Solution* s) override{
         int t1, t2;
         // On choisit deux tournées aléatoires
         random_device rd;
@@ -24,7 +29,23 @@ public:
         }else{
             VoisinInter(s, t1, t2);
         }
+        return *this;
     }
+
+    TypeVoisin getVoisin(Solution* s) override{
+        ClientTournee c1 = this->getC1();
+        ClientTournee c2 = this->getC2();
+        if(c1.getTournee() == c2.getTournee()){
+            s->echangeIntra(c1.getTournee(), c1.getIndex(), c1.getIndex());
+        }
+        else{
+            s->echangeInter(c1.getTournee(), c2.getTournee(), c1.getIndex(), c2.getIndex());
+            this->setTourneePourC1(c2.getTournee());
+            this->setTourneePourC2(c1.getTournee());
+        }
+        return *this;
+    }
+
 
 private:
     void VoisinIntra(Solution* s, int t){
@@ -44,6 +65,7 @@ private:
         // On effectue l'opération de voisinage correspondant
         s->echangeIntra(t, listeTournee[i1], listeTournee[i2]);
     }
+
 
     void VoisinInter(Solution* s, int t1, int t2){
         int i1, i2;

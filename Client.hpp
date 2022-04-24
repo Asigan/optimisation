@@ -13,6 +13,12 @@ class Client {        // The class
         y = _y;
         q = _q;
     }
+    Client(int _index){
+        index = _index;
+        x = 0;
+        y = 0;
+        q = 0;
+}
     int getIndex(){
         return index;
     }
