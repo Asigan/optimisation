@@ -21,7 +21,7 @@ public:
         heightMap = ((double)(yMax - yMin))*(1+OFFSET*2);
         //Initialize SDL
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-            printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+            cout << "SDL could not initialize! SDL_Error" <<  SDL_GetError() << endl;
         } else {
             //Create window
             window = SDL_CreateWindow("Solution actuelle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
