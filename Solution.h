@@ -101,12 +101,18 @@ public:
     }
 
     void echangeIntra(int tournee, int c1, int c2){
+        distance -= tournees[tournee].getDistanceHeuristique();
         tournees[tournee].switchClients(c1, c2);
+        distance += tournees[tournee].getDistanceHeuristique();
     }
 
     void echangeInter(int tournee1, int tournee2, int c1, int c2){
+        distance -= tournees[tournee1].getDistanceHeuristique();
+        distance -= tournees[tournee2].getDistanceHeuristique();
         tournees[tournee1].replaceClient(c2, c1);
         tournees[tournee2].replaceClient(c1, c2);
+        distance += tournees[tournee1].getDistanceHeuristique();
+        distance += tournees[tournee2].getDistanceHeuristique();
     }
 
     void insertionIntra(int tournee, int c1, int c2){
@@ -114,10 +120,18 @@ public:
     }
 
     void insertionInter(int tournee1, int tournee2, int c1, int c2){
+        distance -= tournees[tournee1].getDistanceHeuristique();
+        if(tournee1!=tournee2) distance -= tournees[tournee2].getDistanceHeuristique();
+
         tournees[tournee1].deleteClient(c1);
         tournees[tournee2].insert(c1, c2);
+        distance += tournees[tournee1].getDistanceHeuristique();
+        if(tournee1!=tournee2) distance += tournees[tournee2].getDistanceHeuristique();
     }
 
+    void inversion(int tournee, int c1, int c2){
+        this->getTournee(tournee).inversion(c1, c2);
+    }
     int getNbClients(){
         int nbClients = 0;
         for(Tournee tournee : tournees){

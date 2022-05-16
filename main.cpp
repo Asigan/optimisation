@@ -26,7 +26,6 @@ int main(int argc, char* args[]) {
     cout << s.toString() << endl;
     i.afficher(s);
 
-
     // test du hash qui doit permettre de retrouver immédiatement deux mouvements identiques (v1 et v3 sont identiques)
     Client c1 = Client(0, 1, 1, 1);
     Client c2 = Client(1, 2, 2, 2);
@@ -47,6 +46,26 @@ int main(int argc, char* args[]) {
     cout << to_string(v_dico[v1]) << endl;
     cout << to_string(v_dico[v2]) << endl;
     cout << to_string(v_dico[v3]) << endl;
+
+    Tournee tourneeTest = Tournee(clients);
+    tourneeTest.insert(1, 0);
+    tourneeTest.insert(2, 1);
+    tourneeTest.insert(3, 2);
+    tourneeTest.insert(4, 3);
+    tourneeTest.insert(5, 4);
+    cout << tourneeTest.toString() << endl;
+    cout << to_string(tourneeTest.getDistanceHeuristique())<< endl;
+    tourneeTest.inversion(5, 2);
+    cout << tourneeTest.toString() << endl;
+    cout << to_string(tourneeTest.getDistanceHeuristique())<< endl;
+    tourneeTest.inversion(2, 4);
+    cout << tourneeTest.toString() << endl;
+    cout << to_string(tourneeTest.getDistanceHeuristique())<< endl;
+
+    /*
+    tourneeTest.inversion(2, 4);
+    cout << tourneeTest.toString() << endl;
+    */
 
     return 0;
 }
