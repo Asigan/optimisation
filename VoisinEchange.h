@@ -46,6 +46,21 @@ public:
         return *this;
     }
 
+    vector<shared_ptr<TypeVoisin>> generateVoisins(vector<shared_ptr<ClientTournee>> clients) override {
+        vector<shared_ptr<TypeVoisin>> res = vector<shared_ptr<TypeVoisin>>();
+
+        for(int i=0; i<clients.size(); i++ ){
+            for(int j=i+1; j<clients.size(); j++){
+                VoisinEchange tmp = VoisinEchange(clients[i], clients[j]);
+                shared_ptr<VoisinEchange> tmp_ref = make_shared<VoisinEchange>(tmp);
+                res.push_back(tmp_ref);
+            }
+        }
+        return res;
+    }
+    virtual size_t getHash() const override{
+        return 2000000000 + this->getC1().getIndex()*1000 + this->getC2().getIndex();
+    }
 
 private:
     void VoisinIntra(Solution* s, int t){

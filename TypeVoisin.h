@@ -20,11 +20,12 @@ public:
         return true;
     }
     virtual TypeVoisin VoisinAleatoire(Solution* s){ return TypeVoisin();}
-    virtual void ListeVoisins(Solution* s){}
+    virtual vector<shared_ptr<TypeVoisin>> generateVoisins(vector<shared_ptr<ClientTournee>> clients){return vector<shared_ptr<TypeVoisin>>();}
     virtual TypeVoisin getVoisin(Solution* s){return TypeVoisin();}
     virtual size_t getHash() const{
         return 0;
     }
+
 
     ClientTournee getC1() const{
         return *client1;
