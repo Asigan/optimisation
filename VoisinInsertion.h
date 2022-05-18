@@ -42,10 +42,28 @@ public:
             this->setTourneePourC1(c2.getTournee());
         }
     }
+    vector<shared_ptr<TypeVoisin>> generateVoisins(vector<shared_ptr<ClientTournee>> clients) override {
+        vector<shared_ptr<TypeVoisin>> res = vector<shared_ptr<TypeVoisin>>();
+
+        for(int i=0; i<clients.size(); i++ ){
+            for(int j=i+1; j<clients.size(); j++){
+                VoisinInsertion tmp = VoisinInsertion(clients[j], clients[i]);
+
+                auto tmp_ref = make_shared<VoisinInsertion>(tmp);
+                res.push_back(tmp_ref);
+                if((*clients[i]).getIndex()!=0){
+                    VoisinInsertion tmp = VoisinInsertion(clients[i], clients[j]);
+                    auto tmp_ref = make_shared<VoisinInsertion>(tmp);
+                    res.push_back(tmp_ref);
+                }
+            }
+        }
+        return res;
+    }
 
     size_t getHash() const{
         // le plus simple de tous les hashs pour tester
-        return 1000000000 ^ this->getC2().getTournee()*1000000  ^ this->getC1().getIndex()*1000 ^ this->getC2().getIndex();
+        return 1000000000 + this->getC2().getTournee()*1000000  + this->getC1().getIndex()*1000 + this->getC2().getIndex();
     }
 
 
