@@ -52,9 +52,12 @@ public:
 
         for(int i=0; i<clients.size(); i++ ){
             for(int j=i+1; j<clients.size(); j++){
-                VoisinEchange tmp = VoisinEchange(clients[i], clients[j]);
-                shared_ptr<VoisinEchange> tmp_ref = make_shared<VoisinEchange>(tmp);
-                res.push_back(tmp_ref);
+                if((*clients[i]).getIndex()!=0 && (*clients[j]).getIndex()!=0){
+                    VoisinEchange tmp = VoisinEchange(clients[i], clients[j]);
+                    shared_ptr<VoisinEchange> tmp_ref = make_shared<VoisinEchange>(tmp);
+                    res.push_back(tmp_ref);
+                }
+
             }
         }
         return res;
