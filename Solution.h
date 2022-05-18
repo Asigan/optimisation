@@ -92,6 +92,10 @@ public:
         return tournees[num];
     }
 
+    void setTournees(vector<Tournee> ts){
+        // TODO à supprimer
+        this->tournees = ts;
+    }
     auto getTournees(){
         return tournees;
     }

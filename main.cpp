@@ -11,8 +11,10 @@ using namespace std;
 int main(int argc, char* args[]) {
     Reader r = Reader();
     std::vector<Client> clients = r.lectureFichier("..\\Tests\\A3205.txt");
-    Solution s = Solution(clients);
-    std::cout << s.toString() << endl;
+    Solution* s = new Solution(clients);
+    std::cout << s->toString() << endl;
+    cout << s->getDistance() << endl;
+    /*
     auto missing_clients = s.checkAllClientsAreInSolution(clients);
     for(auto mc = missing_clients.begin(); mc != missing_clients.end(); ++mc){
         cout << to_string(*mc) << " - ";
@@ -47,12 +49,7 @@ int main(int argc, char* args[]) {
     cout << to_string(v_dico[v2]) << endl;
     cout << to_string(v_dico[v3]) << endl;
 
-    Tournee tourneeTest = Tournee(clients);
-    tourneeTest.insert(1, 0);
-    tourneeTest.insert(2, 1);
-    tourneeTest.insert(3, 2);
-    tourneeTest.insert(4, 3);
-    tourneeTest.insert(5, 4);
+
     cout << tourneeTest.toString() << endl;
     cout << to_string(tourneeTest.getDistanceHeuristique())<< endl;
     tourneeTest.inversion(5, 2);
@@ -62,10 +59,30 @@ int main(int argc, char* args[]) {
     cout << tourneeTest.toString() << endl;
     cout << to_string(tourneeTest.getDistanceHeuristique())<< endl;
 
-    /*
-    tourneeTest.inversion(2, 4);
-    cout << tourneeTest.toString() << endl;
     */
+    Tournee tourneeTest1 = Tournee(clients);
+    tourneeTest1.insert(1, 0);
+    Tournee tourneeTest2 = Tournee(clients);
+    Tournee tourneeTest3 = Tournee(clients);
+    tourneeTest3.insert(3, 0);
 
+    auto stest = new Solution(clients);
+    auto tourneestest = stest->getTournees();
+    tourneestest.clear();
+    tourneestest.push_back(tourneeTest1);
+    tourneestest.push_back(tourneeTest2);
+    tourneestest.push_back(tourneeTest3);
+    stest->setTournees(tourneestest);
+
+    cout << stest->toString() << endl;
+    VoisinEchange* voisin = new VoisinEchange();
+    Recuit recuit;
+
+    recuit.algo(stest, 1, 10, 100, 0.7, voisin);
+
+
+    //Solution res = recuit.algo(s, 1, 10, 100, 0.7, voisin);
+    //cout << res.toString() << endl;
+    //cout << res.getDistance() << endl;
     return 0;
 }
