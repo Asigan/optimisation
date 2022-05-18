@@ -24,12 +24,13 @@ public:
         uniform_int_distribution<int> t(0, s->getNbTournees()-1);
         t1 = t(rd);
         t2 = t(rd);
+        TypeVoisin tv = TypeVoisin();
         if(t1 == t2) {
-            VoisinIntra(s, t1);
+            tv = VoisinIntra(s, t1);
         }else{
-            VoisinInter(s, t1, t2);
+            tv = VoisinInter(s, t1, t2);
         }
-        return *this;
+        return tv;
     }
 
     TypeVoisin getVoisin(Solution* s) override{
@@ -63,26 +64,40 @@ public:
     }
 
 private:
-    void VoisinIntra(Solution* s, int t){
+    TypeVoisin VoisinIntra(Solution* s, int t){
         int i1, i2;
         random_device rd;
 
         // On get la tournee correspondante
         Tournee tournee = s->getTournee(t);
-
-        // On choisit dans la tournée 2 clients aléatoires
         vector<int> listeTournee = tournee.returnTournee();
-        listeTournee.erase(listeTournee.begin());
-        uniform_int_distribution<int> c(0, listeTournee.size()-1);
-        i1 = c(rd);
-        while((i2=c(rd)) == i1);
+        // On choisit dans la tournée 2 clients aléatoires (sauf s'il y en a qu'un seul)
+        if(listeTournee.size() == 1){
+            return *this;
+        }else if(listeTournee.size() == 2){
+            i1 = 0;
+            i2 = 0;
+        }else{
+            listeTournee.erase(listeTournee.begin());
+            uniform_int_distribution<int> c(0, listeTournee.size() - 1);
+            i1 = c(rd);
+            while ((i2 = c(rd)) == i1);
 
         // On effectue l'opération de voisinage correspondant
         s->echangeIntra(t, listeTournee[i1], listeTournee[i2]);
+        ClientTournee ct1 = ClientTournee(listeTournee[i1]);
+        ClientTournee ct2 = ClientTournee(listeTournee[i2]);
+        ct1.setTournee(t);
+        ct2.setTournee(t);
+        auto s_ct1 = make_shared<ClientTournee>(ct1);
+        auto s_ct2 = make_shared<ClientTournee>(ct2);
+        VoisinEchange ve = VoisinEchange(s_ct1, s_ct2);
+        return ve;
+        }
     }
 
 
-    void VoisinInter(Solution* s, int t1, int t2){
+    TypeVoisin VoisinInter(Solution* s, int t1, int t2){
         int i1, i2;
         random_device rd;
 
@@ -93,15 +108,28 @@ private:
         // On choisit un client aléatoire dans chaque tournée
         vector<int> listeTournee1 = tournee1.returnTournee();
         vector<int> listeTournee2 = tournee2.returnTournee();
-        listeTournee1.erase(listeTournee1.begin());
-        listeTournee2.erase(listeTournee2.begin());
-        uniform_int_distribution<int> c1(0, listeTournee1.size()-1);
-        uniform_int_distribution<int> c2(0, listeTournee2.size()-1);
-        i1 = c1(rd);
-        i2 = c2(rd);
+
+        if(listeTournee1.size() == 1 || listeTournee2.size() == 1){
+            return *this;
+        }else{
+            listeTournee1.erase(listeTournee1.begin());
+            listeTournee2.erase(listeTournee2.begin());
+            uniform_int_distribution<int> c1(0, listeTournee1.size()-1);
+            uniform_int_distribution<int> c2(0, listeTournee2.size() - 1);
+            i1 = c1(rd);
+            i2 = c2(rd);
+        }
 
         // On effectue l'opération de voisinage correspondant
         s->echangeInter(t1, t2, listeTournee1[i1], listeTournee2[i2]);
+
+        ClientTournee ct1 = ClientTournee(listeTournee1[i1]);
+        ClientTournee ct2 = ClientTournee(listeTournee2[i2]);
+        ct1.setTournee(t2); ct2.setTournee(t1);
+        auto s_ct1 = make_shared<ClientTournee>(ct1);
+        auto s_ct2 = make_shared<ClientTournee>(ct2);
+        VoisinEchange ve = VoisinEchange(s_ct1, s_ct2);
+        return ve;
     }
 
 };

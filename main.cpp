@@ -9,16 +9,18 @@
 
 using namespace std;
 int main(int argc, char* args[]) {
-    /*
+
     Reader r = Reader();
     std::vector<Client> clients = r.lectureFichier("..\\Tests\\A3205.txt");
-    Solution s = Solution(clients);
-    std::cout << s.toString() << endl;
-    auto missing_clients = s.checkAllClientsAreInSolution(clients);
+    Solution* s = new Solution(clients);
+    std::cout << s->toString() << endl;
+    cout << s->getDistance() << endl;
+
+    auto missing_clients = s->checkAllClientsAreInSolution(clients);
     for(auto mc = missing_clients.begin(); mc != missing_clients.end(); ++mc){
         cout << to_string(*mc) << " - ";
     }
-
+    /*
     auto i = Interface(clients);
     i.afficher(s);
 
@@ -49,6 +51,32 @@ int main(int argc, char* args[]) {
     for(int i=0; i<listVoisinEchange.size(); i++){
         cout << to_string(listVoisinEchange[i]->getHash()) << endl;
     }
+    unordered_map<VoisinInsertion, int> v_dico;
 
+
+    Tournee tourneeTest1 = Tournee(clients);
+    tourneeTest1.insert(1, 0);
+    Tournee tourneeTest2 = Tournee(clients);
+    Tournee tourneeTest3 = Tournee(clients);
+    tourneeTest3.insert(3, 0);
+
+    auto stest = new Solution(clients);
+    auto tourneestest = stest->getTournees();
+    tourneestest.clear();
+    tourneestest.push_back(tourneeTest1);
+    tourneestest.push_back(tourneeTest2);
+    tourneestest.push_back(tourneeTest3);
+    stest->setTournees(tourneestest);
+
+    cout << stest->toString() << endl;
+    VoisinEchange* voisin = new VoisinEchange();
+    Recuit recuit;
+
+    recuit.algo(stest, 1, 10, 100, 0.7, voisin);
+
+
+    //Solution res = recuit.algo(s, 1, 10, 100, 0.7, voisin);
+    //cout << res.toString() << endl;
+    //cout << res.getDistance() << endl;
     return 0;
 }

@@ -44,7 +44,8 @@ public:
         insert(insertedC, predecesseurs[0]);
     }
 
-    void switchClients(int c1, int c2){
+    int switchClients(int c1, int c2){
+        int error = 1;
         if(successeurs.count(c1) > 0
                 && successeurs.count(c2) > 0
                     && c1 != c2
@@ -89,9 +90,10 @@ public:
             // création des liens autour de c2 (à partir des anciennes connexions de c1)
             distance_heuristique += getDistance(c2, beforeC1);
             distance_heuristique += getDistance(c2, afterC1);
-
+            error = 0;
 
         }
+        return error;
     }
 
     int inversion(int c1, int c2){
@@ -146,9 +148,14 @@ public:
     }
 
     void replaceClient(int insertedC, int deletedC){
-        int clientBefore = predecesseurs[deletedC];
-        deleteClient(deletedC);
-        insert(insertedC, clientBefore);
+        try{
+            int clientBefore = predecesseurs[deletedC];
+            deleteClient(deletedC);
+            insert(insertedC, clientBefore);
+        }catch(const char* msg){
+            cout << "remplacement de client n'a pas fonctionné" << endl;
+            cout << msg << endl;
+        }
     }
 
     int getQuantiteRestante(){
