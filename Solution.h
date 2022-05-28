@@ -96,7 +96,7 @@ public:
         // TODO à supprimer
         this->tournees = ts;
     }
-    auto getTournees(){
+    vector<Tournee> getTournees(){
         return tournees;
     }
 
