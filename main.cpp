@@ -1,11 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include "Client.hpp"
 #include "Reader.h"
 #include "Solution.h"
 #include "Interface.h"
 #include "Recuit.h"
+#include "VoisinsManager.h"
+#include "ClientTournee.h"
+
 
 using namespace std;
 int main(int argc, char* args[]) {
@@ -20,16 +22,13 @@ int main(int argc, char* args[]) {
     for(auto mc = missing_clients.begin(); mc != missing_clients.end(); ++mc){
         cout << to_string(*mc) << " - ";
     }
-    /*
+
     auto i = Interface(clients);
-    i.afficher(s);
+    i.afficher(*s);
+
+
 
     Recuit recuit;
-    recuit.trouverVoisin(&s);
-    cout << s.toString() << endl;
-    i.afficher(s);
-    */
-
     // test du hash qui doit permettre de retrouver immédiatement deux mouvements identiques (v1 et v3 sont identiques)
     Client c1 = Client(0, 1, 1, 1);
     Client c2 = Client(1, 2, 2, 2);
@@ -46,11 +45,11 @@ int main(int argc, char* args[]) {
     v_s_clients.push_back(s_c2);
     v_s_clients.push_back(s_c3);
     v_s_clients.push_back(s_c4);
-    VoisinEchange voisinechange = VoisinEchange();
+    /*VoisinEchange voisinechange = VoisinEchange();
     auto listVoisinEchange = voisinechange.generateVoisins(v_s_clients);
     for(int i=0; i<listVoisinEchange.size(); i++){
         cout << to_string(listVoisinEchange[i]->getHash()) << endl;
-    }
+    }*/
     unordered_map<VoisinInsertion, int> v_dico;
 
 
@@ -70,13 +69,35 @@ int main(int argc, char* args[]) {
 
     cout << stest->toString() << endl;
     VoisinEchange* voisin = new VoisinEchange();
-    Recuit recuit;
 
     recuit.algo(stest, 1, 10, 100, 0.7, voisin);
+    VoisinEchange ve = VoisinEchange(s_c1, s_c2);
+    VoisinEchange ve2 = VoisinEchange(s_c2, s_c3);
+    VoisinEchange ve3 = VoisinEchange(s_c1, s_c3);
 
+    VoisinsManager vm = VoisinsManager();
+    vm.addVoisin(ve);
+    vm.addVoisin(ve2);
 
-    //Solution res = recuit.algo(s, 1, 10, 100, 0.7, voisin);
-    //cout << res.toString() << endl;
-    //cout << res.getDistance() << endl;
+    cout << vm.toString() << endl;
+    vm.addVoisin(ve);
+    cout << vm.toString() << endl;
+    vm.removeVoisin(ve);
+    cout << vm.toString() << endl;
+    cout << to_string(vm.contains(ve)) << endl;
+
+    VoisinsManager vm2 = VoisinsManager();
+    vm2.addVoisin(ve3);
+
+    vm.transfertGroupeVoisins(vm2);
+    cout << to_string(vm.contains(ve3)) << endl;
+    cout << "affichage vm" << endl;
+    cout << vm.toString() << endl;
+    cout << "affichage vm2" << endl;
+    cout << vm2.toString() << endl;
+
+    Solution res = recuit.algo(s, 1, 10, 100, 0.7, voisin);
+    cout << res.toString() << endl;
+    cout << res.getDistance() << endl;
     return 0;
 }

@@ -5,12 +5,14 @@
 #ifndef OPTIMISATION_TYPEVOISIN_H
 #define OPTIMISATION_TYPEVOISIN_H
 
-#include "Solution.h"
-#include "ClientTournee.h"
 #include <memory>
+#include <vector>
 
 using namespace std;
 
+class Solution;
+class ClientTournee;
+class VoisinsManager;
 class TypeVoisin{
 public:
     TypeVoisin(){}
@@ -20,33 +22,25 @@ public:
         return true;
     }
     virtual TypeVoisin VoisinAleatoire(Solution* s){ return TypeVoisin();}
-    virtual vector<shared_ptr<TypeVoisin>> generateVoisins(vector<shared_ptr<ClientTournee>> clients){return vector<shared_ptr<TypeVoisin>>();}
+    virtual VoisinsManager generateVoisins(std::vector<shared_ptr<ClientTournee>> clients);
     virtual TypeVoisin getVoisin(Solution* s){return TypeVoisin();}
     virtual size_t getHash() const{
         return 0;
     }
 
 
-    ClientTournee getC1() const{
-        return *client1;
-    }
-    ClientTournee getC2() const{
-        return *client2;
-    }
+    ClientTournee getC1() const;
 
-    void setTourneePourC1(int num){
-        client1->setTournee(num);
-    }
-    void setTourneePourC2(int num){
-        client2->setTournee(num);
-    }
+    ClientTournee getC2() const;
+
+    void setTourneePourC1(int num);
+
+    void setTourneePourC2(int num);
 
 
 private:
     shared_ptr<ClientTournee> client1, client2;
 
 };
-bool operator==(const TypeVoisin& l_tv, const TypeVoisin& r_tv){
-    return l_tv.getHash() == r_tv.getHash();
-}
+
 #endif //OPTIMISATION_TYPEVOISIN_H

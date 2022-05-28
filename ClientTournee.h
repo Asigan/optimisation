@@ -4,6 +4,7 @@
 
 #ifndef OPTIMISATION_CLIENTTOURNEE_H
 #define OPTIMISATION_CLIENTTOURNEE_H
+#include "Client.hpp"
 
 class ClientTournee: public Client{
 public:
