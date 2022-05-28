@@ -9,7 +9,7 @@
 #include "Solution.h"
 #include "VoisinEchange.h"
 #include "VoisinInsertion.h"
-
+#include "VoisinsManager.h"
 #include <chrono>
 #include <thread>
 
@@ -24,7 +24,8 @@ public:
             for(int l = 1; l<n2; l++){
                 double f_init = s->getDistance();
                 std::this_thread::sleep_for(std::chrono::nanoseconds (1));
-                TypeVoisin v = voisin->VoisinAleatoire(s);
+                // todo vérifier que ça ça marche bien, normalement y'a pas de raison
+                auto v = voisin->VoisinAleatoire(s).getFirstElement();
                 double f_voisin = s->getDistance();
                 double df = f_voisin - f_init;
                 if(df<=0){
@@ -37,7 +38,7 @@ public:
                     uniform_real_distribution<double> dist(0, 1);
                     double p = dist(rd);
                     if (p>exp(-df/t)){
-                        v.getVoisin(s);
+                        v->getVoisin(s);
                     }
                 }
             }

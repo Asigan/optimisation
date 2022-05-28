@@ -21,9 +21,9 @@ public:
     virtual bool isDoable(Solution* s){
         return true;
     }
-    virtual TypeVoisin VoisinAleatoire(Solution* s){ return TypeVoisin();}
+    virtual VoisinsManager VoisinAleatoire(Solution* s);
     virtual VoisinsManager generateVoisins(std::vector<shared_ptr<ClientTournee>> clients);
-    virtual TypeVoisin getVoisin(Solution* s){return TypeVoisin();}
+    virtual VoisinsManager getVoisin(Solution* s);
     virtual size_t getHash() const{
         return 0;
     }

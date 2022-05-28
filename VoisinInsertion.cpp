@@ -7,33 +7,30 @@
 #include "ClientTournee.h"
 #include "VoisinsManager.h"
 
-TypeVoisin VoisinInsertion::VoisinAleatoire(Solution* s){
+VoisinsManager VoisinInsertion::VoisinAleatoire(Solution* s) {
     int t1, t2;
     // On choisit deux tournées aléatoires
     random_device rd;
-    uniform_int_distribution<int> t(0, s->getNbTournees()-1);
+    uniform_int_distribution<int> t(0, s->getNbTournees() - 1);
     t1 = t(rd);
     t2 = t(rd);
-    if(t1 == t2) {
-        VoisinIntra(s, t1);
-    }else{
-        VoisinInter(s, t1, t2);
+    VoisinsManager inverse;
+    if (t1 == t2) {
+        inverse = VoisinIntra(s, t1);
+    } else {
+        inverse = VoisinInter(s, t1, t2);
     }
-    //todo: toujours renvoyer l'inverse...
-    return TypeVoisin();
+    return inverse;
 }
-TypeVoisin VoisinInsertion::getVoisin(Solution* s){
+
+VoisinsManager VoisinInsertion::getVoisin(Solution* s){
     ClientTournee c1 = this->getC1();
     ClientTournee c2 = this->getC2();
-    if(c1.getTournee() == c2.getTournee()){
-        s->insertionIntra(c1.getTournee(), c1.getIndex(), c2.getIndex());
-    }
-    else{
-        s->insertionInter(c1.getTournee(), c2.getTournee(), c1.getIndex(), c2.getIndex());
+    VoisinsManager inverse = realiserInsert(s, c1.getTournee(), c2.getTournee(), c1.getIndex(), c2.getIndex());
+    if(c1.getTournee() != c2.getTournee()){
         this->setTourneePourC1(c2.getTournee());
     }
-    //todo: bien renvoyer l'inverse...
-    return TypeVoisin();
+    return inverse;
 }
 VoisinsManager VoisinInsertion::generateVoisins(vector<shared_ptr<ClientTournee>> clients) {
     vector<shared_ptr<TypeVoisin>> res = vector<shared_ptr<TypeVoisin>>();
@@ -54,11 +51,15 @@ VoisinsManager VoisinInsertion::generateVoisins(vector<shared_ptr<ClientTournee>
 }
 
 size_t VoisinInsertion::getHash() const{
-    // le plus simple de tous les hashs pour tester
+    // un hash assez simple
     return 1000000000 + this->getC2().getTournee()*1000000  + this->getC1().getIndex()*1000 + this->getC2().getIndex();
 }
 
-TypeVoisin VoisinInsertion::VoisinInter(Solution* s, int t1, int t2){
+VoisinsManager VoisinInsertion::VoisinIntra(Solution* s, int t){
+    return VoisinInter(s, t, t);
+}
+
+VoisinsManager VoisinInsertion::VoisinInter(Solution* s, int t1, int t2){
     int i1, i2;
     random_device rd;
 
@@ -84,15 +85,14 @@ TypeVoisin VoisinInsertion::VoisinInter(Solution* s, int t1, int t2){
     return realiserInsert(s, t1, t2, listeTournee1[i1], listeTournee2[i2]);
 }
 
-TypeVoisin VoisinInsertion::realiserInsert(Solution* s, int t1, int t2, int c1, int c2){
-    //const auto ms = make_shared<ClientTournee>;
-    using ms = shared_ptr<ClientTournee> (*) (ClientTournee);
-
+VoisinsManager VoisinInsertion::realiserInsert(Solution* s, int t1, int t2, int c1, int c2){
     auto tournee1 = s->getTournee(t1);
     int predecesseur = tournee1.getClientBefore(c1);
     s->insertionInter(t1, t2, c1, c2);
-    weak_ptr<ClientTournee> ct1 = make_shared<ClientTournee>(ClientTournee(c1));
-    weak_ptr<ClientTournee> ct2 = make_shared<ClientTournee>(ClientTournee(predecesseur));
-    // todo: bien renvoyer l'inverse...
-    return VoisinInsertion();
+    auto ct1 = make_shared<ClientTournee>(ClientTournee(Client(c1), t2));
+    auto ct2 = make_shared<ClientTournee>(ClientTournee(Client(predecesseur), t1));
+    auto vi = VoisinInsertion(ct1, ct2);
+    auto inverse = VoisinsManager();
+    inverse.addVoisin(vi);
+    return inverse;
 }

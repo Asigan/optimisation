@@ -16,40 +16,19 @@ class VoisinInsertion : public TypeVoisin{
 public:
     using TypeVoisin::TypeVoisin;
 
-    TypeVoisin VoisinAleatoire(Solution* s);
+    VoisinsManager VoisinAleatoire(Solution* s);
 
-    TypeVoisin getVoisin(Solution* s);
+    VoisinsManager getVoisin(Solution* s);
     VoisinsManager generateVoisins(vector<shared_ptr<ClientTournee>> clients) override;
 
     size_t getHash() const;
 
 private:
-    TypeVoisin VoisinIntra(Solution* s, int t){
-        return VoisinInter(s, t, t);
-        /*int i1, i2;
-        random_device rd;
+    VoisinsManager VoisinIntra(Solution* s, int t);
 
-        // On get la tournee correspondante
-        Tournee tournee = s->getTournee(t);
+    VoisinsManager VoisinInter(Solution* s, int t1, int t2);
 
-        // On choisit dans la tournée 2 client aléatoire
-        vector<int> listeTournee = tournee.returnTournee();
-        vector<int> listeTourneeBefore = tournee.returnTournee();
-        listeTournee.erase(listeTournee.begin());
-        // Le clientBefore peut être 0
-        uniform_int_distribution<int> c1(0, listeTournee.size()-1);
-        uniform_int_distribution<int> c2(0, listeTourneeBefore.size()-1);
-        i1 = c1(rd);
-        while((i2=c2(rd)) == i1);
-        
-        // On effectue l'opération de voisinage correspondant
-        s->insertionIntra(t, listeTournee[i1], listeTournee[i2]);
-        return TypeVoisin();*/
-    }
-
-    TypeVoisin VoisinInter(Solution* s, int t1, int t2);
-
-    TypeVoisin realiserInsert(Solution* s, int t1, int t2, int c1, int c2);
+    VoisinsManager realiserInsert(Solution* s, int t1, int t2, int c1, int c2);
 
 };
 template<>

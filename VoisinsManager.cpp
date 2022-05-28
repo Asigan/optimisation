@@ -12,9 +12,13 @@ void VoisinsManager::eraseall(){
     listeVoisins.clear();
 }
 
-std::pair<unordered_set<shared_ptr<TypeVoisin>>::iterator,
-        unordered_set<shared_ptr<TypeVoisin>>::iterator> VoisinsManager::getIterator(){
+std::pair<unordered_set<shared_ptr<TypeVoisin>>::const_iterator,
+        unordered_set<shared_ptr<TypeVoisin>>::const_iterator> VoisinsManager::getIterator() const{
     return std::make_pair(listeVoisins.begin(), listeVoisins.end());
+}
+
+std::shared_ptr<TypeVoisin> VoisinsManager::getFirstElement() const{
+    return *(listeVoisins.begin());
 }
 
 void VoisinsManager::transfertGroupeVoisins(VoisinsManager& vm){

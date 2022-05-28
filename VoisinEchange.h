@@ -17,19 +17,19 @@ public:
     // op ternaires pour assurer que c1 est le plus petit (puisque symétrique)
     explicit VoisinEchange(shared_ptr<ClientTournee> c1, shared_ptr<ClientTournee> c2);
 
-    TypeVoisin VoisinAleatoire(Solution* s) override;
+    VoisinsManager VoisinAleatoire(Solution* s) override;
 
-    TypeVoisin getVoisin(Solution* s) override;
+    VoisinsManager getVoisin(Solution* s) override;
 
     VoisinsManager generateVoisins(vector<shared_ptr<ClientTournee>> clients) override;
 
     virtual size_t getHash() const override;
 
 private:
-    TypeVoisin VoisinIntra(Solution* s, int t);
+    VoisinsManager VoisinIntra(Solution* s, int t);
 
 
-    TypeVoisin VoisinInter(Solution* s, int t1, int t2);
+    VoisinsManager VoisinInter(Solution* s, int t1, int t2);
 
 };
 template<>

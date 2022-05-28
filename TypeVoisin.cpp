@@ -18,6 +18,9 @@ void TypeVoisin::setTourneePourC2(int num){
 }
 VoisinsManager TypeVoisin::generateVoisins(std::vector<shared_ptr<ClientTournee>> clients){return VoisinsManager();}
 
+VoisinsManager TypeVoisin::VoisinAleatoire(Solution* s){ return VoisinsManager();}
+
+VoisinsManager TypeVoisin::getVoisin(Solution* s){return VoisinsManager();}
 template<>
 struct std::hash<TypeVoisin>
 {

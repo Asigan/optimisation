@@ -53,8 +53,10 @@ public:
 
     void eraseall();
 
-    std::pair<std::unordered_set<std::shared_ptr<TypeVoisin>>::iterator,
-        std::unordered_set<std::shared_ptr<TypeVoisin>>::iterator> getIterator();
+    std::pair<std::unordered_set<std::shared_ptr<TypeVoisin>>::const_iterator,
+        std::unordered_set<std::shared_ptr<TypeVoisin>>::const_iterator> getIterator() const;
+
+    std::shared_ptr<TypeVoisin> getFirstElement() const;
 
     void transfertGroupeVoisins(VoisinsManager& vm);
 
