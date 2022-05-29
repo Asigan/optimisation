@@ -39,18 +39,17 @@ VoisinsManager VoisinEchange::getVoisin(Solution* s){
     return vm_inverse;
 }
 VoisinsManager VoisinEchange::generateVoisins(vector<shared_ptr<ClientTournee>> clients) {
-    vector<shared_ptr<TypeVoisin>> res = vector<shared_ptr<TypeVoisin>>();
+    VoisinsManager res;
 
     for(int i=0; i<clients.size(); i++ ){
         for(int j=i+1; j<clients.size(); j++){
             if((*clients[i]).getIndex()!=0 && (*clients[j]).getIndex()!=0){
                 VoisinEchange tmp = VoisinEchange(clients[i], clients[j]);
-                shared_ptr<VoisinEchange> tmp_ref = make_shared<VoisinEchange>(tmp);
-                res.push_back(tmp_ref);
+                res.addVoisin(tmp);
             }
         }
     }
-    return VoisinsManager();
+    return res;
 }
 
 size_t VoisinEchange::getHash() const {

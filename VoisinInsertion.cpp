@@ -33,21 +33,20 @@ VoisinsManager VoisinInsertion::getVoisin(Solution* s){
     return inverse;
 }
 VoisinsManager VoisinInsertion::generateVoisins(vector<shared_ptr<ClientTournee>> clients) {
-    vector<shared_ptr<TypeVoisin>> res = vector<shared_ptr<TypeVoisin>>();
+    VoisinsManager res;
     for(int i=0; i<clients.size(); i++ ){
         for(int j=i+1; j<clients.size(); j++){
-            VoisinInsertion tmp = VoisinInsertion(clients[j], clients[i]);
-
-            auto tmp_ref = make_shared<VoisinInsertion>(tmp);
-            res.push_back(tmp_ref);
-            if((*clients[i]).getIndex()!=0){
-                VoisinInsertion tmp = VoisinInsertion(clients[i], clients[j]);
-                auto tmp_ref = make_shared<VoisinInsertion>(tmp);
-                res.push_back(tmp_ref);
+            if(clients[j]->getIndex()!=0) {
+                VoisinInsertion tmp = VoisinInsertion(clients[j], clients[i]);
+                res.addVoisin(tmp);
+            }
+            if ((*clients[i]).getIndex() != 0) {
+                VoisinInsertion tmp2 = VoisinInsertion(clients[i], clients[j]);
+                res.addVoisin(tmp2);
             }
         }
     }
-    return VoisinsManager();
+    return res;
 }
 
 size_t VoisinInsertion::getHash() const{
