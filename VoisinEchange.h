@@ -12,7 +12,7 @@ using namespace std;
 
 class VoisinEchange : public TypeVoisin{
 public:
-    VoisinEchange(){}
+    VoisinEchange(): TypeVoisin(){}
 
     // op ternaires pour assurer que c1 est le plus petit (puisque symétrique)
     explicit VoisinEchange(shared_ptr<ClientTournee> c1, shared_ptr<ClientTournee> c2);

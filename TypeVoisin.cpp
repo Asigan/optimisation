@@ -4,6 +4,11 @@
 #include "TypeVoisin.h"
 #include "ClientTournee.h"
 #include "VoisinsManager.h"
+
+TypeVoisin::TypeVoisin(){
+    client1 = make_shared<ClientTournee>(ClientTournee(0));
+    client2 = make_shared<ClientTournee>(ClientTournee(0));
+}
 ClientTournee TypeVoisin::getC2() const{
     return *client2;
 }

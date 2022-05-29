@@ -15,7 +15,7 @@ class ClientTournee;
 class VoisinsManager;
 class TypeVoisin{
 public:
-    TypeVoisin(){}
+    TypeVoisin();
     TypeVoisin(shared_ptr<ClientTournee> client1, shared_ptr<ClientTournee> client2) : client1(client1), client2(client2) {
     }
     virtual bool isDoable(Solution* s){
