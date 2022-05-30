@@ -25,6 +25,8 @@ struct EqualtoTypeVoisin{
         return (*lhs).getHash() == (*rhs).getHash();
     }
 };
+
+
 class VoisinsManager {
 private:
     // on est obligés d'utiliser des pointeurs sinon pas de polymorphie
@@ -59,6 +61,13 @@ public:
     std::shared_ptr<TypeVoisin> getFirstElement() const;
 
     void transfertGroupeVoisins(VoisinsManager& vm);
+
+    size_t size(){
+        return listeVoisins.size();
+    }
+    void insertFromVM(shared_ptr<TypeVoisin> value){
+        listeVoisins.insert(value);
+    }
 
    std::string toString();
 };
