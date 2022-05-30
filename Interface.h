@@ -9,6 +9,7 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -17,6 +18,8 @@ class Interface{
 public:
     Interface(vector<Client> clients) {
         setMinMaxs(clients);
+        cout << "mins: " << to_string(xMin) << "|" << to_string(yMin) << endl;
+        cout << "max: " << to_string(xMax) << "|" << to_string(yMax) << endl;
         widthMap = ((double)(xMax - xMin))*(1+OFFSET*2);
         heightMap = ((double)(yMax - yMin))*(1+OFFSET*2);
         //Initialize SDL
@@ -32,7 +35,7 @@ public:
             else{
 
                 window_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-                SDL_SetRenderDrawColor( window_renderer, 120, 100, 110, 255 );
+                SDL_SetRenderDrawColor( window_renderer, 120, 100, 110, 255);
                 SDL_RenderClear( window_renderer );
                 // Render the rect to the screen
                 SDL_RenderPresent(window_renderer);
@@ -95,7 +98,13 @@ public:
         writeText(("Nombre de camions : " + to_string(tournees.size())
         + " | Distance totale : " + to_string(s.getDistance())).c_str(), 0, 0);
         SDL_RenderPresent(window_renderer);
-        SDL_Delay( 10000 );
+        SDL_Event e;
+        SDL_WaitEvent(&e);
+        while(e.type != SDL_QUIT){
+            SDL_WaitEvent(&e);
+        }
+
+
     }
 
 
@@ -154,24 +163,24 @@ private:
         SDL_Rect r;
         r.x = convertXClientToXWindow((double)c.getX());
         r.y = convertYClientToYWindow((double)c.getY());
-        r.w = (SCREEN_WIDTH/widthMap)*(1.0-OFFSET);
-        r.h = (SCREEN_HEIGHT/heightMap)*(1.0-OFFSET);
+        r.w = std::min((SCREEN_WIDTH/widthMap)*(1.0-OFFSET), 20.0);
+        r.h = std::min((SCREEN_HEIGHT/heightMap)*(1.0-OFFSET), 20.0);
         if(c.getIndex() == 0){
             SDL_SetRenderDrawColor( window_renderer, 255, 50, 50, 255 );
             r.w *= 2;
             r.h *= 2;
         }
         // Render rect
-        SDL_RenderFillRect( window_renderer, &r);
+        SDL_RenderFillRect(window_renderer, &r);
 
         writeText(to_string(c.getIndex()).c_str(), r.x, r.y);
 
     }
     double convertXClientToXWindow(double x){
-        return (x/widthMap + OFFSET/2)*SCREEN_WIDTH;
+        return ((x-xMin+OFFSET)/widthMap)*SCREEN_WIDTH;
     }
     double convertYClientToYWindow(double y){
-        return (y/heightMap + OFFSET/2)*SCREEN_HEIGHT;
+        return ((y-yMin+OFFSET)/heightMap)*SCREEN_HEIGHT;
     }
 
     void writeText(const char* text, int posX, int posY){
