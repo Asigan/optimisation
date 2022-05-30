@@ -16,30 +16,34 @@ class VoisinsManager;
 class TypeVoisin{
 public:
     TypeVoisin();
-    TypeVoisin(shared_ptr<ClientTournee> client1, shared_ptr<ClientTournee> client2) : client1(client1), client2(client2) {
-    }
+    TypeVoisin(int client1, int client2);
     virtual bool isDoable(Solution* s){
         return true;
     }
     virtual VoisinsManager VoisinAleatoire(Solution* s);
-    virtual VoisinsManager generateVoisins(std::vector<shared_ptr<ClientTournee>> clients);
+    virtual VoisinsManager generateVoisins(Solution* s);
     virtual VoisinsManager getVoisin(Solution* s);
     virtual size_t getHash() const{
         return 0;
     }
 
 
-    ClientTournee getC1() const;
+    int getC1() const;
 
-    ClientTournee getC2() const;
+    int getC2() const;
 
-    void setTourneePourC1(int num);
-
-    void setTourneePourC2(int num);
+    bool getErrorLastMove(){
+        return ERROR_LAST_MOVE;
+    }
+//    void setTourneePourC1(int num);
+//
+//    void setTourneePourC2(int num);
 
 
 private:
-    shared_ptr<ClientTournee> client1, client2;
+    int client1, client2;
+protected:
+    bool ERROR_LAST_MOVE = false;
 
 };
 

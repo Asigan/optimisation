@@ -6,7 +6,7 @@
 #include "Solution.h"
 #include "VoisinsManager.h"
 
-VoisinEchange::VoisinEchange(std::shared_ptr<ClientTournee> c1, shared_ptr<ClientTournee> c2) : TypeVoisin(c1->getIndex()<c2->getIndex()?c1:c2, c1->getIndex()<c2->getIndex()?c2:c1){ }
+VoisinEchange::VoisinEchange(int c1, int c2) : TypeVoisin(c1<c2?c1:c2, c1<c2?c2:c1){ }
 VoisinsManager VoisinEchange::VoisinAleatoire(Solution* s){
     int t1, t2;
     // On choisit deux tournées aléatoires
@@ -23,27 +23,27 @@ VoisinsManager VoisinEchange::VoisinAleatoire(Solution* s){
     return tv;
 }
 VoisinsManager VoisinEchange::getVoisin(Solution* s){
-    ClientTournee c1 = this->getC1();
-    ClientTournee c2 = this->getC2();
-    if(c1.getTournee() == c2.getTournee()){
-        s->echangeIntra(c1.getTournee(), c1.getIndex(), c1.getIndex());
+    int c1 = this->getC1();
+    int c2 = this->getC2();
+    int t1 = s->getNumTournee(c1);
+    int t2 = s->getNumTournee(c2);
+    if(t1 == t2){
+        s->echangeIntra(t1, c1, c2);
     }
     else{
-        s->echangeInter(c1.getTournee(), c2.getTournee(), c1.getIndex(), c2.getIndex());
-        this->setTourneePourC1(c2.getTournee());
-        this->setTourneePourC2(c1.getTournee());
+        s->echangeInter(t1, t2, c1, c2);
     }
 
     auto vm_inverse = VoisinsManager();
     vm_inverse.addVoisin(*this);
     return vm_inverse;
 }
-VoisinsManager VoisinEchange::generateVoisins(vector<shared_ptr<ClientTournee>> clients) {
+VoisinsManager VoisinEchange::generateVoisins(Solution* s) {
     VoisinsManager res;
-
+    auto clients = s->getClients();
     for(int i=0; i<clients.size(); i++ ){
         for(int j=i+1; j<clients.size(); j++){
-            if((*clients[i]).getIndex()!=0 && (*clients[j]).getIndex()!=0){
+            if(clients[i]>0 && clients[j]>0){
                 VoisinEchange tmp = VoisinEchange(clients[i], clients[j]);
                 res.addVoisin(tmp);
             }
@@ -53,7 +53,7 @@ VoisinsManager VoisinEchange::generateVoisins(vector<shared_ptr<ClientTournee>> 
 }
 
 size_t VoisinEchange::getHash() const {
-    return 2000000000 + this->getC1().getIndex()*1000 + this->getC2().getIndex();
+    return 2000000000 + this->getC1()*1000 + this->getC2();
 }
 
 VoisinsManager VoisinEchange::VoisinIntra(Solution* s, int t){
@@ -80,13 +80,10 @@ VoisinsManager VoisinEchange::VoisinIntra(Solution* s, int t){
     }
     // On effectue l'opération de voisinage correspondant
     s->echangeIntra(t, listeTournee[i1], listeTournee[i2]);
-    ClientTournee ct1 = ClientTournee(listeTournee[i1]);
-    ClientTournee ct2 = ClientTournee(listeTournee[i2]);
-    ct1.setTournee(t);
-    ct2.setTournee(t);
-    auto s_ct1 = make_shared<ClientTournee>(ct1);
-    auto s_ct2 = make_shared<ClientTournee>(ct2);
-    vm_inverse.addVoisin(VoisinEchange(s_ct1, s_ct2));
+    int ct1 = listeTournee[i1];
+    int ct2 = listeTournee[i2];
+
+    vm_inverse.addVoisin(VoisinEchange(ct1, ct2));
     return vm_inverse;
 }
 
@@ -118,11 +115,9 @@ VoisinsManager VoisinEchange::VoisinInter(Solution* s, int t1, int t2){
     // On effectue l'opération de voisinage correspondant
     s->echangeInter(t1, t2, listeTournee1[i1], listeTournee2[i2]);
 
-    ClientTournee ct1 = ClientTournee(listeTournee1[i1]);
-    ClientTournee ct2 = ClientTournee(listeTournee2[i2]);
-    ct1.setTournee(t2); ct2.setTournee(t1);
-    auto s_ct1 = make_shared<ClientTournee>(ct1);
-    auto s_ct2 = make_shared<ClientTournee>(ct2);
-    vm_inverse.addVoisin(VoisinEchange(s_ct1, s_ct2));
+    int ct1 = listeTournee1[i1];
+    int ct2 = listeTournee2[i2];
+
+    vm_inverse.addVoisin(VoisinEchange(ct1, ct2));
     return vm_inverse;
 }

@@ -6,22 +6,27 @@
 #include "VoisinsManager.h"
 
 TypeVoisin::TypeVoisin(){
-    client1 = make_shared<ClientTournee>(ClientTournee(0));
-    client2 = make_shared<ClientTournee>(ClientTournee(0));
+    client1 = 0;
+    client2 = 0;
 }
-ClientTournee TypeVoisin::getC2() const{
-    return *client2;
+
+TypeVoisin::TypeVoisin(int ct1, int ct2){
+    client1 = ct1;
+    client2 = ct2;
 }
-ClientTournee TypeVoisin::getC1() const{
-    return *client1;
+int TypeVoisin::getC2() const{
+    return client2;
 }
-void TypeVoisin::setTourneePourC1(int num){
-    client1->setTournee(num);
+int TypeVoisin::getC1() const{
+    return client1;
 }
-void TypeVoisin::setTourneePourC2(int num){
-    client2->setTournee(num);
-}
-VoisinsManager TypeVoisin::generateVoisins(std::vector<shared_ptr<ClientTournee>> clients){return VoisinsManager();}
+//void TypeVoisin::setTourneePourC1(int num){
+//    client1->setTournee(num);
+//}
+//void TypeVoisin::setTourneePourC2(int num){
+//    client2->setTournee(num);
+//}
+VoisinsManager TypeVoisin::generateVoisins(Solution* s){return VoisinsManager();}
 
 VoisinsManager TypeVoisin::VoisinAleatoire(Solution* s){ return VoisinsManager();}
 

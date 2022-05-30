@@ -15,15 +15,15 @@ public:
     VoisinEchange(): TypeVoisin(){}
 
     // op ternaires pour assurer que c1 est le plus petit (puisque symétrique)
-    explicit VoisinEchange(shared_ptr<ClientTournee> c1, shared_ptr<ClientTournee> c2);
+    VoisinEchange(int c1, int c2);
 
     VoisinsManager VoisinAleatoire(Solution* s) override;
 
     VoisinsManager getVoisin(Solution* s) override;
 
-    VoisinsManager generateVoisins(vector<shared_ptr<ClientTournee>> clients) override;
+    VoisinsManager generateVoisins(Solution* s) override;
 
-    virtual size_t getHash() const override;
+    size_t getHash() const override;
 
 private:
     VoisinsManager VoisinIntra(Solution* s, int t);

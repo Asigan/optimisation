@@ -24,23 +24,24 @@ VoisinsManager VoisinInsertion::VoisinAleatoire(Solution* s) {
 }
 
 VoisinsManager VoisinInsertion::getVoisin(Solution* s){
-    ClientTournee c1 = this->getC1();
-    ClientTournee c2 = this->getC2();
-    VoisinsManager inverse = realiserInsert(s, c1.getTournee(), c2.getTournee(), c1.getIndex(), c2.getIndex());
-    if(c1.getTournee() != c2.getTournee()){
-        this->setTourneePourC1(c2.getTournee());
-    }
+    int c1 = this->getC1();
+    int c2 = this->getC2();
+
+    VoisinsManager inverse = realiserInsert(s, s->getNumTournee(c1), s->getNumTournee(c2), c1, c2);
     return inverse;
 }
-VoisinsManager VoisinInsertion::generateVoisins(vector<shared_ptr<ClientTournee>> clients) {
+VoisinsManager VoisinInsertion::generateVoisins(Solution* s) {
+
+    vector<int> clients = s->getClients();
+
     VoisinsManager res;
     for(int i=0; i<clients.size(); i++ ){
         for(int j=i+1; j<clients.size(); j++){
-            if(clients[j]->getIndex()!=0) {
+            if(clients[j]>0) {
                 VoisinInsertion tmp = VoisinInsertion(clients[j], clients[i]);
                 res.addVoisin(tmp);
             }
-            if ((*clients[i]).getIndex() != 0) {
+            if (clients[i]> 0) {
                 VoisinInsertion tmp2 = VoisinInsertion(clients[i], clients[j]);
                 res.addVoisin(tmp2);
             }
@@ -50,8 +51,14 @@ VoisinsManager VoisinInsertion::generateVoisins(vector<shared_ptr<ClientTournee>
 }
 
 size_t VoisinInsertion::getHash() const{
+    int c2_index = this->getC2();
+    int c2_tournee = 0;
+    if(c2_index<=0){
+        c2_tournee = -c2_index;
+        c2_index = 0;
+    }
     // un hash assez simple
-    return 1000000000 + this->getC2().getTournee()*1000000  + this->getC1().getIndex()*1000 + this->getC2().getIndex();
+    return 1000000000 + c2_tournee*1000000  + this->getC1()*1000 + c2_index;
 }
 
 VoisinsManager VoisinInsertion::VoisinIntra(Solution* s, int t){
@@ -87,9 +94,10 @@ VoisinsManager VoisinInsertion::VoisinInter(Solution* s, int t1, int t2){
 VoisinsManager VoisinInsertion::realiserInsert(Solution* s, int t1, int t2, int c1, int c2){
     auto tournee1 = s->getTournee(t1);
     int predecesseur = tournee1.getClientBefore(c1);
-    s->insertionInter(t1, t2, c1, c2);
-    auto ct1 = make_shared<ClientTournee>(ClientTournee(Client(c1), t2));
-    auto ct2 = make_shared<ClientTournee>(ClientTournee(Client(predecesseur), t1));
+    c2 = std::max<int>(0, c2);
+    ERROR_LAST_MOVE = s->insertionInter(t1, t2, c1, c2);
+    auto ct1 = c1;
+    auto ct2 = predecesseur;
     auto vi = VoisinInsertion(ct1, ct2);
     auto inverse = VoisinsManager();
     inverse.addVoisin(vi);

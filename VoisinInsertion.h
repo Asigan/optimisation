@@ -19,7 +19,7 @@ public:
     VoisinsManager VoisinAleatoire(Solution* s);
 
     VoisinsManager getVoisin(Solution* s);
-    VoisinsManager generateVoisins(vector<shared_ptr<ClientTournee>> clients) override;
+    VoisinsManager generateVoisins(Solution* s) override;
 
     size_t getHash() const;
 
