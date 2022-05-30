@@ -7,7 +7,7 @@
 
 #include <chrono>
 #include "Tournee.h"
-
+#include <unordered_map>
 using namespace std;
 class Solution{
 public:
@@ -47,12 +47,16 @@ public:
                     int ind = distribution_clients(generator);
                     client_before = clients_dans_tournee[ind];
                     tournees[camion_pour_client].insert(client->getIndex(), client_before);
+                    _clientsTournees.emplace(make_pair(client->getIndex(), camion_pour_client));
                     client_non_traite = false;
                 }
             }
         }
+        // on retire les tournees vides
+        for(int i=0; i < tournees.size(); i++){
+            if(tournees[i].returnTournee().size() == 1) removeTournee(i);
+        }
         computeTotalDistance();
-
     }
 
     string toString(){
@@ -95,6 +99,7 @@ public:
     void setTournees(vector<Tournee> ts){
         // TODO à supprimer
         this->tournees = ts;
+        computeTotalDistance();
     }
     vector<Tournee> getTournees(){
         return tournees;
@@ -104,38 +109,78 @@ public:
         return distance;
     }
 
-    void echangeIntra(int tournee, int c1, int c2){
+    int echangeIntra(int tournee, int c1, int c2){
         distance -= tournees[tournee].getDistanceHeuristique();
-        tournees[tournee].switchClients(c1, c2);
+        int error = tournees[tournee].switchClients(c1, c2);
         distance += tournees[tournee].getDistanceHeuristique();
+        return error;
     }
 
-    void echangeInter(int tournee1, int tournee2, int c1, int c2){
-        distance -= tournees[tournee1].getDistanceHeuristique();
-        distance -= tournees[tournee2].getDistanceHeuristique();
-        tournees[tournee1].replaceClient(c2, c1);
-        tournees[tournee2].replaceClient(c1, c2);
-        distance += tournees[tournee1].getDistanceHeuristique();
-        distance += tournees[tournee2].getDistanceHeuristique();
+    int echangeInter(int tournee1, int tournee2, int c1, int c2){
+        int erreur = 1;
+        double diff = 0;
+        if(tournees[tournee1].contains(c1) && tournees[tournee2].contains(c2)) {
+            diff -= tournees[tournee1].getDistanceHeuristique();
+            diff -= tournees[tournee2].getDistanceHeuristique();
+            erreur = tournees[tournee1].replaceClient(c2, c1);
+            erreur = erreur || tournees[tournee2].replaceClient(c1, c2);
+            diff += tournees[tournee1].getDistanceHeuristique();
+            diff += tournees[tournee2].getDistanceHeuristique();
+            if(!erreur){
+                _clientsTournees[c1] = tournee2;
+                _clientsTournees[c2] = tournee1;
+                distance += diff;
+            }
+        }
+        else{
+            cerr << "ERREUR echangeInter: c1 ou c2 non contenus dans la tournée déclarée => c1 : " << to_string(c1)
+                << " | t1 : " << to_string(tournee1) << " | c2 : " << to_string(c2) << " | t2 :" << to_string(tournee2);
+        }
+        return erreur;
     }
 
     void insertionIntra(int tournee, int c1, int c2){
         insertionInter(tournee, tournee, c1, c2);
     }
 
-    void insertionInter(int tournee1, int tournee2, int c1, int c2){
-        distance -= tournees[tournee1].getDistanceHeuristique();
-        if(tournee1!=tournee2) distance -= tournees[tournee2].getDistanceHeuristique();
-
-        tournees[tournee1].deleteClient(c1);
-        tournees[tournee2].insert(c1, c2);
-        distance += tournees[tournee1].getDistanceHeuristique();
-        if(tournee1!=tournee2) distance += tournees[tournee2].getDistanceHeuristique();
+    int insertionInter(int tournee1, int tournee2, int c1, int c2){
+        int error = 1;
+        double diff = 0;
+        if(tournee2 >= tournees.size()) {
+            cerr << "ERREUR insertionInter: tournee2 est supérieur au nombre de tournees" << endl;
+            return 1;
+        }
+        if(tournees[tournee2].contains(c2)){
+            diff -= tournees[tournee1].getDistanceHeuristique();
+            if(tournee1!=tournee2) diff -= tournees[tournee2].getDistanceHeuristique();
+            int predecesseur = tournees[tournee1].getClientBefore(c1);
+            error = tournees[tournee1].deleteClient(c1);
+            if(error==0) {
+                error = tournees[tournee2].insert(c1, c2);
+                diff += tournees[tournee1].getDistanceHeuristique();
+                if (tournee1 != tournee2) diff += tournees[tournee2].getDistanceHeuristique();
+                if(error==0){
+                    distance += diff;
+                    _clientsTournees[c1] = tournee2;
+                    if(tournees[tournee1].returnTournee().size() == 1) removeTournee(tournee1);
+                }
+                else{
+                    tournees[tournee1].insert(c1, predecesseur);
+                    cerr << "ERREUR insertionInter: plus de place dans la tournee " << to_string(tournee2) << " pour le client " << to_string(c1) << endl;
+                }
+            }
+        }
+        else{
+            cerr << "ERREUR InsertionInter: c2 non contenu dans tournee2 => c2:" << to_string(c2) << "| t2:" << to_string(tournee2) << endl;
+            cerr << "Valeur de la tournee stockée pour c2: " << to_string(getNumTournee(c2));
+        }
+        return error;
     }
 
     void inversion(int tournee, int c1, int c2){
         this->getTournee(tournee).inversion(c1, c2);
     }
+
     int getNbClients(){
         int nbClients = 0;
         for(Tournee tournee : tournees){
@@ -143,10 +188,34 @@ public:
         }
         return nbClients;
     }
+    vector<int> getClients(){
+        vector<int> clients;
+        for(auto c: _clientsTournees){
+            clients.push_back(c.first);
+        }
+        for(int i=1; i<getNbTournees(); i++){
+            clients.push_back(-i);
+        }
+        return clients;
+    }
+
+
+    int getNumTournee(int client){
+        if(client <= 0){
+            // pour identifier les dépôts des différentes tournees, on leur donnera un indice négatif
+            // 0 pour la tournée 0, -1 pour la tournée 1, etc
+            return -client;
+        }
+        else if(_clientsTournees.count(client)>0){
+            return _clientsTournees[client];
+        }
+        return -1;
+    }
 
 private:
     vector<Tournee> tournees;
     double distance;
+    std::unordered_map<int, int> _clientsTournees;
     void computeTotalDistance(){
         distance = 0;
         for(auto t=tournees.begin(); t!=tournees.end(); ++t){
@@ -161,6 +230,16 @@ private:
             tot += client->getQuantity();
         }
         return floor(tot/100)+1;
+    }
+
+    void removeTournee(int numTournee){
+        tournees.erase(tournees.begin() + numTournee);
+        for(int i = numTournee; i<getNbTournees(); i++){
+            auto clients = tournees[i].returnTournee();
+            for(auto client: clients){
+                _clientsTournees[client] = i;
+            }
+        }
     }
 
 };
