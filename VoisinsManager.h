@@ -52,6 +52,10 @@ public:
     bool contains(T tv){
         return listeVoisins.count(make_shared<T>(tv)) > 0;
     }
+    template<typename T>
+    bool containsFromVM(shared_ptr<T> tv){
+        return listeVoisins.count(tv) > 0;
+    }
 
     void eraseall();
 
@@ -61,6 +65,7 @@ public:
     std::shared_ptr<TypeVoisin> getFirstElement() const;
 
     void transfertGroupeVoisins(VoisinsManager& vm);
+
 
     size_t size(){
         return listeVoisins.size();

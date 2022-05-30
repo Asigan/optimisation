@@ -24,8 +24,8 @@ public:
     }
     int insert(int insertedC, int clientBefore){
         if(quantite_restante < clients[insertedC].getQuantity()){
-            cerr << "ERREUR insert: Plus de place pour le client" << endl;
-            cerr << "Place restante: " << to_string(quantite_restante) << " | Place client:" << to_string(clients[insertedC].getQuantity()) << endl;
+            //cerr << "ERREUR insert: Plus de place pour le client" << endl;
+            //cerr << "Place restante: " << to_string(quantite_restante) << " | Place client:" << to_string(clients[insertedC].getQuantity()) << endl;
         }
         else if(successeurs.count(clientBefore)>0){
             int clientAfter = successeurs[clientBefore];
@@ -41,7 +41,7 @@ public:
             return 0;
         }
         else{
-            cerr << "ERREUR insert: Le client permettant l'insertion n'appartient pas à la tournee" << endl;
+            //cerr << "ERREUR insert: Le client permettant l'insertion n'appartient pas à la tournee" << endl;
         }
         return 1;
     }
@@ -100,8 +100,8 @@ public:
 
         }
         else{
-            if(c1 == 0 || c2 == 0) cerr << "ERREUR switchClients: impossible de switch le depot" << endl;
-            else if(!contains(c1) || !contains(c2)) cerr <<  "ERREUR switchClients: un client n'est pas contenu dans la tournee" << endl;
+            //if(c1 == 0 || c2 == 0) cerr << "ERREUR switchClients: impossible de switch le depot" << endl;
+            //else if(!contains(c1) || !contains(c2)) cerr <<  "ERREUR switchClients: un client n'est pas contenu dans la tournee" << endl;
         }
         return error;
     }
@@ -159,15 +159,15 @@ public:
             erreur = 0;
         }
         else{
-            if(deletedC == 0) cerr << "Erreur DeleteClient: Impossible de supprimer le depot"<< endl;
-            else cerr << "Erreur DeleteClient: Client n'est pas contenu dans la tournee" << endl;
+            //if(deletedC == 0) cerr << "Erreur DeleteClient: Impossible de supprimer le depot"<< endl;
+            //else cerr << "Erreur DeleteClient: Client n'est pas contenu dans la tournee" << endl;
         }
         return erreur;
     }
 
     int replaceClient(int insertedC, int deletedC){
         if(contains(insertedC)){
-            cerr << "Erreur replaceClient: L'element a inserer ne doit pas etre present dans la tournee"<< endl;
+            //cerr << "Erreur replaceClient: L'element a inserer ne doit pas etre present dans la tournee"<< endl;
             return 1;
         }
 

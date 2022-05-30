@@ -110,6 +110,9 @@ public:
     }
 
     int echangeIntra(int tournee, int c1, int c2){
+        if(tournees[tournee].returnTournee().size() <= 3){
+            return 1;
+        }
         distance -= tournees[tournee].getDistanceHeuristique();
         int error = tournees[tournee].switchClients(c1, c2);
         distance += tournees[tournee].getDistanceHeuristique();
@@ -123,7 +126,12 @@ public:
             diff -= tournees[tournee1].getDistanceHeuristique();
             diff -= tournees[tournee2].getDistanceHeuristique();
             erreur = tournees[tournee1].replaceClient(c2, c1);
-            erreur = erreur || tournees[tournee2].replaceClient(c1, c2);
+            if(!erreur) {
+                erreur = tournees[tournee2].replaceClient(c1, c2);
+                if(erreur){
+                    tournees[tournee1].replaceClient(c1, c2);
+                }
+            }
             diff += tournees[tournee1].getDistanceHeuristique();
             diff += tournees[tournee2].getDistanceHeuristique();
             if(!erreur){
@@ -133,8 +141,8 @@ public:
             }
         }
         else{
-            cerr << "ERREUR echangeInter: c1 ou c2 non contenus dans la tournée déclarée => c1 : " << to_string(c1)
-                << " | t1 : " << to_string(tournee1) << " | c2 : " << to_string(c2) << " | t2 :" << to_string(tournee2);
+            //cerr << "ERREUR echangeInter: c1 ou c2 non contenus dans la tournée déclarée => c1 : " << to_string(c1)
+            //    << " | t1 : " << to_string(tournee1) << " | c2 : " << to_string(c2) << " | t2 :" << to_string(tournee2);
         }
         return erreur;
     }
@@ -146,8 +154,14 @@ public:
     int insertionInter(int tournee1, int tournee2, int c1, int c2){
         int error = 1;
         double diff = 0;
+
         if(tournee2 >= tournees.size()) {
-            cerr << "ERREUR insertionInter: tournee2 est supérieur au nombre de tournees" << endl;
+            //cerr << "ERREUR insertionInter: tournee2 est supérieur au nombre de tournees" << endl;
+            return 1;
+        }
+        if(tournees[tournee2].getClientAfter(c2) == c1
+            || (tournee1 == tournee2 && tournees[tournee1].returnTournee().size() <= 3)){
+            //cerr << "ERREUR insertionInter: L'action n'aurait aucun effet" << endl;
             return 1;
         }
         if(tournees[tournee2].contains(c2)){
@@ -166,13 +180,13 @@ public:
                 }
                 else{
                     tournees[tournee1].insert(c1, predecesseur);
-                    cerr << "ERREUR insertionInter: plus de place dans la tournee " << to_string(tournee2) << " pour le client " << to_string(c1) << endl;
+                    //cerr << "ERREUR insertionInter: plus de place dans la tournee " << to_string(tournee2) << " pour le client " << to_string(c1) << endl;
                 }
             }
         }
         else{
-            cerr << "ERREUR InsertionInter: c2 non contenu dans tournee2 => c2:" << to_string(c2) << "| t2:" << to_string(tournee2) << endl;
-            cerr << "Valeur de la tournee stockée pour c2: " << to_string(getNumTournee(c2));
+            //cerr << "ERREUR InsertionInter: c2 non contenu dans tournee2 => c2:" << to_string(c2) << "| t2:" << to_string(tournee2) << endl;
+            //cerr << "Valeur de la tournee stockée pour c2: " << to_string(getNumTournee(c2));
         }
         return error;
     }

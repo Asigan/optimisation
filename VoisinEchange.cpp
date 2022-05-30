@@ -28,12 +28,11 @@ VoisinsManager VoisinEchange::getVoisin(Solution* s){
     int t1 = s->getNumTournee(c1);
     int t2 = s->getNumTournee(c2);
     if(t1 == t2){
-        s->echangeIntra(t1, c1, c2);
+        ERROR_LAST_MOVE = s->echangeIntra(t1, c1, c2);
     }
     else{
-        s->echangeInter(t1, t2, c1, c2);
+        ERROR_LAST_MOVE = s->echangeInter(t1, t2, c1, c2);
     }
-
     auto vm_inverse = VoisinsManager();
     vm_inverse.addVoisin(*this);
     return vm_inverse;
