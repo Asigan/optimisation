@@ -22,11 +22,12 @@ public:
         predecesseurs.emplace(0, 0);
         successeurs.emplace(0, 0);
     }
-    void insert(int insertedC, int clientBefore){
-        if(insertedC > clients.size() || quantite_restante < clients[insertedC].getQuantity()){
-            // TODO: ajouter le client dans la liste des clients
+    int insert(int insertedC, int clientBefore){
+        if(quantite_restante < clients[insertedC].getQuantity()){
+            cerr << "ERREUR insert: Plus de place pour le client" << endl;
+            cerr << "Place restante: " << to_string(quantite_restante) << " | Place client:" << to_string(clients[insertedC].getQuantity()) << endl;
         }
-        else{
+        else if(successeurs.count(clientBefore)>0){
             int clientAfter = successeurs[clientBefore];
             successeurs[clientBefore] = insertedC;
             predecesseurs[clientAfter] = insertedC;
@@ -37,7 +38,12 @@ public:
             distance_heuristique -= getDistance(clientBefore, clientAfter);
             distance_heuristique += getDistance(clientBefore, insertedC);
             distance_heuristique += getDistance(clientAfter, insertedC);
+            return 0;
         }
+        else{
+            cerr << "ERREUR insert: Le client permettant l'insertion n'appartient pas à la tournee" << endl;
+        }
+        return 1;
     }
 
     void insert_end(int insertedC){
@@ -93,6 +99,10 @@ public:
             error = 0;
 
         }
+        else{
+            if(c1 == 0 || c2 == 0) cerr << "ERREUR switchClients: impossible de switch le depot" << endl;
+            else if(!contains(c1) || !contains(c2)) cerr <<  "ERREUR switchClients: un client n'est pas contenu dans la tournee" << endl;
+        }
         return error;
     }
 
@@ -130,8 +140,10 @@ public:
         return 0;
     }
 
-    void deleteClient(int deletedC){
-        if(successeurs.count(deletedC) > 0 && predecesseurs.count(deletedC) > 0){
+    int deleteClient(int deletedC){
+        int erreur = 1;
+        if(successeurs.count(deletedC) > 0 && predecesseurs.count(deletedC) > 0
+        && deletedC != 0){
             int beforeC = predecesseurs[deletedC];
             int afterC = successeurs[deletedC];
 
@@ -144,18 +156,34 @@ public:
             distance_heuristique -= (getDistance(deletedC, beforeC)
                                      + getDistance(deletedC, afterC));
             distance_heuristique += getDistance(beforeC, afterC);
+            erreur = 0;
         }
+        else{
+            if(deletedC == 0) cerr << "Erreur DeleteClient: Impossible de supprimer le depot"<< endl;
+            else cerr << "Erreur DeleteClient: Client n'est pas contenu dans la tournee" << endl;
+        }
+        return erreur;
     }
 
-    void replaceClient(int insertedC, int deletedC){
-        try{
-            int clientBefore = predecesseurs[deletedC];
-            deleteClient(deletedC);
-            insert(insertedC, clientBefore);
-        }catch(const char* msg){
-            cout << "remplacement de client n'a pas fonctionné" << endl;
-            cout << msg << endl;
+    int replaceClient(int insertedC, int deletedC){
+        if(contains(insertedC)){
+            cerr << "Erreur replaceClient: L'element a inserer ne doit pas etre present dans la tournee"<< endl;
+            return 1;
         }
+
+        int clientBefore = predecesseurs[deletedC];
+        int erreur1 =  deleteClient(deletedC);
+        int erreur2 = insert(insertedC, clientBefore);
+        if(erreur2 && !erreur1){
+            insert(deletedC, clientBefore);
+        }
+        return erreur2 || erreur1;
+
+
+    }
+
+    bool contains(int client){
+        return successeurs.count(client) > 0;
     }
 
     int getQuantiteRestante(){
@@ -185,10 +213,6 @@ public:
             res.push_back(client);
         }
         return res;
-    }
-
-    bool contains(int client){
-        return successeurs.count(client) > 0;
     }
 
     vector<Client> getClients(){
