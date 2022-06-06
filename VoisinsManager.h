@@ -70,6 +70,18 @@ public:
     size_t size(){
         return listeVoisins.size();
     }
+    void eraseLast(){
+        if(listeVoisins.size() > 0){
+            auto ite = listeVoisins.begin();
+            auto ite_res = ite;
+            while(ite!=listeVoisins.end()){
+                ite_res = ite;
+                ite++;
+            }
+            listeVoisins.erase(ite_res);
+        }
+    }
+
     void insertFromVM(shared_ptr<TypeVoisin> value){
         listeVoisins.insert(value);
     }
