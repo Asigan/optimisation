@@ -9,6 +9,7 @@
 
 VoisinsManager VoisinInsertion::VoisinAleatoire(Solution* s) {
     int t1, t2;
+    cout << "Insertion" << endl;
     // On choisit deux tournées aléatoires
     random_device rd;
     uniform_int_distribution<int> t(0, s->getNbTournees() - 1);
@@ -48,6 +49,9 @@ VoisinsManager VoisinInsertion::generateVoisins(Solution* s) {
         }
     }
     return res;
+}
+int VoisinInsertion::nbVoisins() {
+    return 20;
 }
 
 size_t VoisinInsertion::getHash() const{

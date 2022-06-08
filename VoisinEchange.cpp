@@ -9,6 +9,7 @@
 VoisinEchange::VoisinEchange(int c1, int c2) : TypeVoisin(c1<c2?c1:c2, c1<c2?c2:c1){ }
 VoisinsManager VoisinEchange::VoisinAleatoire(Solution* s){
     int t1, t2;
+    cout << "Echange" << endl;
     // On choisit deux tournées aléatoires
     random_device rd;
     uniform_int_distribution<int> t(0, s->getNbTournees()-1);
@@ -49,6 +50,9 @@ VoisinsManager VoisinEchange::generateVoisins(Solution* s) {
         }
     }
     return res;
+}
+int VoisinEchange::nbVoisins(){
+    return 10;
 }
 
 size_t VoisinEchange::getHash() const {

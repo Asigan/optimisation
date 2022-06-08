@@ -23,6 +23,7 @@ public:
     virtual VoisinsManager VoisinAleatoire(Solution* s);
     virtual VoisinsManager generateVoisins(Solution* s);
     virtual VoisinsManager getVoisin(Solution* s);
+    virtual int nbVoisins();
     virtual size_t getHash() const{
         return 0;
     }

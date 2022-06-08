@@ -20,6 +20,7 @@ public:
 
     VoisinsManager getVoisin(Solution* s);
     VoisinsManager generateVoisins(Solution* s) override;
+    int nbVoisins() override;
 
     size_t getHash() const;
 
