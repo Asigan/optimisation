@@ -50,6 +50,25 @@ VoisinsManager VoisinEchange::generateVoisins(Solution* s) {
     }
     return res;
 }
+int VoisinEchange::nbVoisins(Solution* s){
+    int nbClients = s->getNbClients() - s->getNbTournees(); // On prend pas en compte le dépôt
+    int nbEchangeIntra = 0, nbEchangeInter = 0;
+
+    for(Tournee t : s->getTournees()){
+        int tailleTournee = t.returnTournee().size() - 1; // On enlève le dépôt
+        // Echanges inter
+        nbClients -= tailleTournee;
+        nbEchangeInter += tailleTournee * nbClients;
+
+        // Echanges intra
+        if(tailleTournee == 1){
+            nbEchangeIntra ++; // Comme il est possible de faire un échange d'un client avec lui-même s'il est seul dans la tournée
+        }else {
+            nbEchangeIntra += (tailleTournee * (tailleTournee - 1)) / 2;
+        }
+    }
+    return nbEchangeInter + nbEchangeIntra;
+}
 
 size_t VoisinEchange::getHash() const {
     return 2000000000 + this->getC1()*1000 + this->getC2();

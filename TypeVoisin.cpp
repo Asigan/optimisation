@@ -20,6 +20,9 @@ int TypeVoisin::getC2() const{
 int TypeVoisin::getC1() const{
     return client1;
 }
+int TypeVoisin::nbVoisins(Solution* s){
+    return 0;
+}
 //void TypeVoisin::setTourneePourC1(int num){
 //    client1->setTournee(num);
 //}
