@@ -16,13 +16,6 @@ public:
 
         auto start = std::chrono::steady_clock::now();
         std::chrono::duration<double> tempstotal;
-        std::chrono::duration<double> tempsinit;
-        std::chrono::duration<double> tempschoice;
-        std::chrono::duration<double> tempsendite;
-
-        std::chrono::duration<double> tempsif1cond;
-        std::chrono::duration<double> tempstestVoisin;
-        std::chrono::duration<double> tempsif2;
         int cmpt = 0;
         VoisinsManager v = initVoisinage(s, typeVoisinage);
 
@@ -31,21 +24,15 @@ public:
         Solution tmp_sol = *s;
         VoisinsManager bestMove;
         while(cmpt < n){
-            auto startinit = std::chrono::steady_clock::now();
             genereSolutionsTaboues(*s);
 
             double initValue = s->getDistance();
             auto ite_pair = v.getIterator();
             double bestValueIte = numeric_limits<double>::max();
-            auto endinit = std::chrono::steady_clock::now();
-            tempsinit += endinit - startinit;
             auto startchoice = std::chrono::steady_clock::now();
             tmp_sol = *s;
             for(auto ite = ite_pair.first; ite != ite_pair.second; ++ite) {
-                startinit = std::chrono::steady_clock::now();
                 if (!_listeTaboue.containsFromVM(*ite) && !_listeTaboueEmpecheBoucle.containsFromVM(*ite)){
-                    endinit = std::chrono::steady_clock::now();
-                    tempsif1cond += endinit - startinit;
                     //cout << "test de voisin" << to_string((*ite)->getHash()) << endl;
                     //cout << s->toString() << endl;
                     double testValue = testVoisin(s, (*ite));
@@ -65,21 +52,15 @@ public:
                         *s = tmp_sol;
                     }*/
 
-                    startinit = std::chrono::steady_clock::now();
-                    tempstestVoisin += startinit - endinit;
                     if (testValue < bestValueIte
                             && (*ite)->getErrorLastMove()==false) {
                         bestMove.eraseall();
                         bestMove.insertFromVM(*ite);
                         bestValueIte = testValue;
                     }
-                    endinit = std::chrono::steady_clock::now();
-                    tempsif2 += endinit - startinit;
                 }
             }
             *s = tmp_sol;
-            auto endchoice = std::chrono::steady_clock::now();
-            tempschoice += endchoice - startchoice;
             cout << "iteration :" << to_string(cmpt) << endl;
             // cout << "Solution initiale" << endl;
             // cout << s->toString() << endl;
@@ -87,7 +68,7 @@ public:
             VoisinsManager inverseMove = bestMove.getFirstElement()->getVoisin(s);
             // cout << "Solution finale" << endl;
             cout << to_string(bestMove.getFirstElement()->getHash()) << endl;
-            cout << s->toString() << endl;
+            //cout << s->toString() << endl;
             // cout << to_string(s->getDistance()) << endl;
             // cout << "etat voisin : " << to_string(bestMove.getFirstElement()->getErrorLastMove()) << endl;
             //cout << "tabou: " << to_string(_listeTaboue.size()) << endl << _listeTaboue.toString() << endl;
@@ -110,24 +91,11 @@ public:
                 bestValue = s->getDistance();
                 bestSolution = *s;
             }
-            auto endite = std::chrono::steady_clock::now();
-            tempsendite += endite - endchoice;
             cmpt++;
         }
         auto end = std::chrono::steady_clock::now();
         tempstotal = end-start;
-        cout << "temps d'initialisation d'ite: " << tempsinit.count() << endl;
-        cout << "temps de choix de voisin: "<< tempschoice.count() << endl;
-        cout << "temps de fin d'ite: " << tempsendite.count() << endl;
         cout << "temps total: " << tempstotal.count() << endl;
-
-
-        cout << "choix: temps condition 1er if: " << tempsif1cond.count() << endl;
-        cout << "choix: temps fonction testVoisin: " << tempstestVoisin.count() << endl;
-        cout << "choix: temps 2eme if: " << tempsif2.count() << endl;
-
-        cout << "choix: testVoisin: creationVoisin " << tempsCreateVoisin.count() << endl;
-        cout << "choix: testVoisin: tempsIf " << tempsif.count() << endl;
         return bestSolution;
     }
 private:
@@ -149,12 +117,10 @@ private:
     std::chrono::duration<double> tempsif;
     //std::chrono::duration<double> tempschoice;
     double testVoisin(Solution* s, shared_ptr<TypeVoisin> voisin){
-        auto startcrevoisin = std::chrono::steady_clock::now();
         int nbTourneesInit = s->getNbTournees();
         double distanceInit = s->getDistance();
         VoisinsManager inverse = voisin->getVoisin(s);
         double res = s->getDistance();
-        auto endcrevoisin = std::chrono::steady_clock::now();
 
         //if(!voisin->getErrorLastMove() && solutionsInterdites.find(*s) != solutionsInterdites.end()){
         if(!voisin->getErrorLastMove()){
@@ -164,8 +130,7 @@ private:
             }
         }
         auto endif = std::chrono::steady_clock::now();
-        tempsCreateVoisin += endcrevoisin - startcrevoisin;
-        tempsif += endif - endcrevoisin;
+
         if(!voisin->getErrorLastMove()){
             inverse.getFirstElement()->getVoisin(s);
             if(inverse.getFirstElement()->getErrorLastMove()){
