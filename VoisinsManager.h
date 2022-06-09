@@ -45,8 +45,11 @@ public:
 
     template<typename T>
     void addVoisin(T tv){
-        listeVoisins.insert(make_shared<T>(tv));
-        listeVoisinsOrdonnee.push_front(make_shared<T>(tv));
+        auto val = listeVoisins.insert(make_shared<T>(tv));
+        if(val.second){
+            listeVoisinsOrdonnee.push_front(make_shared<T>(tv));
+        }
+
     }
 
     template<typename T>
