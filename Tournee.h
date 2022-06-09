@@ -204,16 +204,30 @@ public:
         return res += "0;";
     }
 
-    vector<int> returnTournee(){
+    vector<int> returnTournee() const{
         vector<int> res = std::vector<int>();
         res.push_back(0);
         int client = 0;
-        while(successeurs[client] != 0) {
-            client = successeurs[client];
+        while(successeurs.at(client) != 0) {
+            client = successeurs.at(client);
             res.push_back(client);
         }
         return res;
     }
+
+    size_t getHash(){
+        std::size_t seed = successeurs.size();
+        int cur = successeurs[0];
+        while(cur != 0) {
+            cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
+            cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
+            cur = (cur >> 16) ^ cur;
+            seed ^= cur + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+            cur = successeurs[cur];
+        }
+        return seed;
+    }
+
 
     vector<Client> getClients(){
         return clients;
@@ -226,6 +240,36 @@ public:
         return successeurs[client];
     }
 
+    void checkTournee(){
+        int cur = 0;
+        double dist = 0;
+        int qte = 100;
+        while(successeurs[cur] != 0){
+            dist += clients[cur].getDistance(clients[successeurs[cur]]);
+            qte -= clients[cur].getQuantity();
+            cur = successeurs[cur];
+        }
+        dist += clients[cur].getDistance(clients[0]);
+        qte -= clients[cur].getQuantity();
+
+        if(qte!=quantite_restante){
+            cerr << "Quantite fausse: faux de " << to_string(qte-quantite_restante) << endl;
+            quantite_restante = qte;
+        }
+        if(std::abs(dist-distance_heuristique) > 0.1){
+            cerr << "Distance fausse: faux de " << to_string(dist-distance_heuristique) << endl;
+            distance_heuristique = dist;
+        }
+
+    }
+
+    friend bool operator==(Tournee const& lhs, Tournee const& rhs) {
+        auto lhs_vector = lhs.returnTournee();
+        auto rhs_vector = rhs.returnTournee();
+        return lhs_vector==rhs_vector;
+    }
+
+
 private:
     unordered_map<int, int> predecesseurs;
     unordered_map<int, int> successeurs;
@@ -236,6 +280,9 @@ private:
     double getDistance(int c1, int c2){
         return clients[c1].getDistance(clients[c2]);
     }
+
+
 };
+
 
 #endif //OPTIMISATION_TOURNEE_H

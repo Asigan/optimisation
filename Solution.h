@@ -87,6 +87,20 @@ public:
         }
         return res;
     }
+    void checkSolution(vector<Client> clients){
+        for(auto tournee: tournees){
+            tournee.checkTournee();
+        }
+        if(!checkAllClientsAreInSolution(clients).empty()){
+            cerr << "Solution: Il manque des clients" << endl;
+        }
+        double tmp = getDistance();
+        computeTotalDistance();
+        if(std::abs(tmp-getDistance()) > 0.1){
+            cerr << "Solution: Erreur dans la distance, faux de "<< to_string(tmp - getDistance()) << endl;
+        }
+    }
+
 
     int getNbTournees(){
         return tournees.size();
@@ -101,7 +115,7 @@ public:
         this->tournees = ts;
         computeTotalDistance();
     }
-    vector<Tournee> getTournees(){
+    vector<Tournee> getTournees() const{
         return tournees;
     }
 
@@ -226,6 +240,21 @@ public:
         return -1;
     }
 
+    size_t getHash() const{
+        std::size_t seed = tournees.size();
+        for(auto tournee: tournees) {
+            size_t cur = tournee.getHash();
+            cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
+            cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
+            cur = (cur >> 16) ^ cur;
+            seed ^= cur + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        }
+        return seed;
+    }
+    friend bool operator==(Solution const& lhs, Solution const& rhs) {
+        return lhs.getTournees() == rhs.getTournees();
+    }
+
 private:
     vector<Tournee> tournees;
     double distance;
@@ -257,4 +286,7 @@ private:
     }
 
 };
+
+
+
 #endif //OPTIMISATION_SOLUTION_H

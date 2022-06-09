@@ -32,7 +32,7 @@ public:
 
     int getC2() const;
 
-    bool getErrorLastMove(){
+    bool getErrorLastMove() const{
         return ERROR_LAST_MOVE;
     }
 //    void setTourneePourC1(int num);

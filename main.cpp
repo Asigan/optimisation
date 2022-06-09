@@ -104,9 +104,32 @@ int main(int argc, char* args[]) {
     //}
     //vm2.getFirstElement()->getVoisin(s);
 
+    //Tournee t = Tournee(clients);
+    //t.insert(1,0);
+    //t.insert(2,0);
+    //t.insert(4,0);
+    //t.insert(7, 0);
+    //t.insert(9,0);
+    //Tournee t2 = Tournee(clients);
+    //t2.insert(11,0);
+    //t2.insert(15,0);
+    //t2.insert(31,0);
+    //vector<Tournee> tournees = vector<Tournee>();
+    //tournees.push_back(t);
+    //tournees.push_back(t2);
+    //s->setTournees(tournees);
+    //cout << s->toString() << endl;
+    //int tmp = s->insertionInter(1,0,31,0);
+    //cout << s->toString() << endl;
+    //cout << to_string(tmp) << endl;
+
+
+
     Tabou t;
-    Solution s_rep = t.algo(s, 100, 10, vm);
+    Solution s_rep = t.algo(s, 100, 30, vm);
     cout << s_rep.toString() << endl;
-    i.afficher(s_rep);
+    s_rep.checkSolution(clients);
+    Interface i2 = Interface(clients);
+    i2.afficher(s_rep);
     return 0;
 }

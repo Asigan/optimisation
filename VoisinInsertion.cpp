@@ -97,6 +97,7 @@ VoisinsManager VoisinInsertion::realiserInsert(Solution* s, int t1, int t2, int 
     c2 = std::max<int>(0, c2);
     ERROR_LAST_MOVE = s->insertionInter(t1, t2, c1, c2);
     auto ct1 = c1;
+    if(predecesseur==0) predecesseur = -t1;
     auto ct2 = predecesseur;
     auto vi = VoisinInsertion(ct1, ct2);
     auto inverse = VoisinsManager();
