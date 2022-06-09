@@ -44,13 +44,13 @@ public:
                         *s = tmp_sol;
                     }
 
-                    /*if(!(*s==tmp_sol)){
+                    if(!(*s==tmp_sol)){
                         cerr << "solution modifiee sans warning" << endl;
                         cerr << to_string((*ite)->getHash())<< endl;
                         cerr << s->toString() << endl;
                         cerr << tmp_sol.toString() << endl;
                         *s = tmp_sol;
-                    }*/
+                    }
 
                     if (testValue < bestValueIte
                             && (*ite)->getErrorLastMove()==false) {
@@ -65,10 +65,19 @@ public:
             // cout << "Solution initiale" << endl;
             // cout << s->toString() << endl;
             // cout << to_string(s->getDistance()) << endl;
-            VoisinsManager inverseMove = bestMove.getFirstElement()->getVoisin(s);
+            VoisinsManager inverseMove;
+            if(bestMove.size()>0){
+                auto move = bestMove.getFirstElement();
+                inverseMove = move->getVoisin(s);
+            }
+            else{
+                bestMove.addVoisin(TypeVoisin());
+                cerr << "Liste taboue trop grande, plus de voisins valides" << endl;
+            }
+
             // cout << "Solution finale" << endl;
             cout << to_string(bestMove.getFirstElement()->getHash()) << endl;
-            //cout << s->toString() << endl;
+            cout << s->toString() << endl;
             // cout << to_string(s->getDistance()) << endl;
             // cout << "etat voisin : " << to_string(bestMove.getFirstElement()->getErrorLastMove()) << endl;
             //cout << "tabou: " << to_string(_listeTaboue.size()) << endl << _listeTaboue.toString() << endl;

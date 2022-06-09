@@ -107,37 +107,49 @@ public:
     }
 
     int inversion(int c1, int c2){
-        int clientInsertion = 0;
+        int error = 1;
+        if(contains(c1) && contains(c2)
+            && c1 != 0 && c2 != 0) {
+            int clientInsertion = 0;
 
-        bool c2Beforec1 = false, c1Beforec2 = false;
-        // on cherche l'ordre (c1 doit être avant c2)
-        int c_parcours = successeurs[c1];
-        while(!c2Beforec1 and !c1Beforec2 ){
-            if(c_parcours == c2){
-                c1Beforec2 = true;
+            bool c2Beforec1 = false, c1Beforec2 = false;
+            // on cherche l'ordre (c1 doit être avant c2)
+            int c_parcours = successeurs[c1];
+            while (!c2Beforec1 and !c1Beforec2) {
+                if (c_parcours == c2) {
+                    c1Beforec2 = true;
+                } else if (c_parcours == 0) {
+                    c2Beforec1 = true;
+                    int tmp = c1;
+                    c1 = c2;
+                    c2 = tmp;
+                }
+                c_parcours = successeurs[c_parcours];
             }
-            else if(c_parcours==0){
-                c2Beforec1 = true;
-                int tmp = c1;
-                c1 = c2;
-                c2 = tmp;
+            // Inversion
+            if (c1 != 0) {
+                clientInsertion = predecesseurs[c1];
             }
-            c_parcours = successeurs[c_parcours];
-        }
-        // Inversion
-        if(c1 != 0){
-            clientInsertion = predecesseurs[c1];
-        }
-        c_parcours = successeurs[c1];
-        int c_final = successeurs[c2];
-        while(c_parcours != c_final){
-            int tmp = successeurs[c_parcours];
-            deleteClient(c_parcours);
-            insert(c_parcours, clientInsertion);
-            c_parcours = tmp;
-        }
+            if(predecesseurs[c1]!=0 || successeurs[c2]!=0){
+                c_parcours = successeurs[c1];
+                int c_final = successeurs[c2];
+                while (c_parcours != c_final) {
+                    int tmp = successeurs[c_parcours];
+                    deleteClient(c_parcours);
+                    insert(c_parcours, clientInsertion);
+                    c_parcours = tmp;
+                }
+                error = 0;
+            }
+            else{
+                //cerr << "tentative d'echanger deux extremes de tournee" << endl;
+                //cerr << "c1: "<< to_string(c1) << "| c2:" << to_string(c2) << endl;
+            }
 
-        return 0;
+
+
+        }
+        return error;
     }
 
     int deleteClient(int deletedC){

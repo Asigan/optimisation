@@ -88,16 +88,22 @@ public:
         return res;
     }
     void checkSolution(vector<Client> clients){
+        bool error = false;
         for(auto tournee: tournees){
             tournee.checkTournee();
         }
         if(!checkAllClientsAreInSolution(clients).empty()){
             cerr << "Solution: Il manque des clients" << endl;
+            error = true;
         }
         double tmp = getDistance();
         computeTotalDistance();
         if(std::abs(tmp-getDistance()) > 0.1){
             cerr << "Solution: Erreur dans la distance, faux de "<< to_string(tmp - getDistance()) << endl;
+            error = true;
+        }
+        if(!error){
+            cout << "Solution valide" << endl;
         }
     }
 
@@ -111,8 +117,14 @@ public:
     }
 
     void setTournees(vector<Tournee> ts){
-        // TODO à supprimer
         this->tournees = ts;
+        _clientsTournees.clear();
+        for(int i=0; i<tournees.size(); i++){
+            for(auto client: tournees[i].returnTournee()){
+                _clientsTournees.emplace(make_pair(client, i));
+            }
+        }
+
         computeTotalDistance();
     }
     vector<Tournee> getTournees() const{
@@ -205,10 +217,11 @@ public:
         return error;
     }
 
-    void inversion(int tournee, int c1, int c2){
+    int inversion(int tournee, int c1, int c2){
         distance -= tournees[tournee].getDistanceHeuristique();
-        tournees[tournee].inversion(c1, c2);
+        int error = tournees[tournee].inversion(c1, c2);
         distance += tournees[tournee].getDistanceHeuristique();
+        return error;
     }
 
     int getNbClients(){

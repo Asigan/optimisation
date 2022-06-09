@@ -8,6 +8,7 @@
 #include "VoisinsManager.h"
 #include "ClientTournee.h"
 #include "Tabou.h"
+#include "VoisinInversion.h"
 
 
 using namespace std;
@@ -66,7 +67,7 @@ int main(int argc, char* args[]) {
     VoisinsManager vm;
     vm.addVoisin(VoisinEchange());
     vm.addVoisin(VoisinInsertion());
-
+    vm.addVoisin(VoisinInversion());
     //Solution s_test = Solution(clients);
     //vector<Tournee> tournees;
     //for(int i=0; i<3; i++){
@@ -80,16 +81,10 @@ int main(int argc, char* args[]) {
     //tournees[2].insert(2, 0);
     //s_test.setTournees(tournees);
     //cout << s_test.toString() << endl;
-    //ClientTournee ct1 = ClientTournee(Client(2), 2);
-    //ClientTournee ct2 = ClientTournee(Client(3), 2);
-    //VoisinInsertion vi = VoisinInsertion(make_shared<ClientTournee>(ct1), make_shared<ClientTournee>(ct2));
-    //auto inverse = vi.getVoisin(&s_test);
-    //cout << s_test.toString() << endl;
-    //cout << to_string(inverse.getFirstElement()->getHash()) << endl;
-    //inverse.getFirstElement()->getVoisin(&s_test);
-    //cout << s_test.toString() << endl;
-    //vector<Tournee> tournees = s->getTournees();
-
+    //VoisinsManager vm2;
+    //VoisinsManager vmtmp = VoisinInversion().generateVoisins(&s_test);
+    //vm2.transfertGroupeVoisins(vmtmp);
+    //cout << vm2.toString() << endl;
     //VoisinEchange ve = VoisinEchange();
     //VoisinInsertion vi = VoisinInsertion();
     //auto vm2 = ve.generateVoisins(s);

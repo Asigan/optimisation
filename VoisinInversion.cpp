@@ -18,23 +18,28 @@ VoisinsManager VoisinInversion::VoisinAleatoire(Solution* s){
     return tv;
 }
 VoisinsManager VoisinInversion::getVoisin(Solution* s){
+
+    int c1 = this->getC1();
+    int c2 = this->getC2();
+    ERROR_LAST_MOVE = s->inversion(s->getNumTournee(c1), c1, c2);
+    VoisinInversion tmp = VoisinInversion();
+
     auto vm_inverse = VoisinsManager();
     vm_inverse.addVoisin(*this);
     return vm_inverse;
 }
 VoisinsManager VoisinInversion::generateVoisins(Solution* s) {
     VoisinsManager res;
-    for(Tournee t : s->getTournees()){
-        auto clients = t.returnTournee();
-        for(int i=0; i<clients.size(); i++){
-            for(int j=i+1; j<clients.size(); j++){
-                if(clients[i]>0 && clients[j]>0){
-                    VoisinInversion tmp = VoisinInversion(clients[i], clients[j]);
-                    res.addVoisin(tmp);
-                }
+    auto clients = s->getClients();
+    for(int i=0; i<clients.size(); i++){
+        for(int j=i+1; j<clients.size(); j++){
+            if(clients[i]>0 && clients[j]>0){
+                VoisinInversion tmp = VoisinInversion(clients[i], clients[j]);
+                res.addVoisin(tmp);
             }
         }
     }
+
     return res;
 }
 int VoisinInversion::nbVoisins(Solution* s){
