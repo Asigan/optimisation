@@ -36,7 +36,7 @@ public:
 
                 for(auto ite = ite_pair.first; ite != ite_pair.second; ++ite) {
                     TypeVoisin *v = ite->get();
-                    nbVoisins += v->nbVoisins();
+                    nbVoisins += v->nbVoisins(s);
                     typesVoisin.insert({v,{oldNbVoisins, nbVoisins}});
                     oldNbVoisins = nbVoisins;
                 }
@@ -44,6 +44,7 @@ public:
                 uniform_int_distribution<int> dist(0, nbVoisins-1);
                 int proba = dist(rd);
                 for(auto i : typesVoisin){
+                    //cout << "On a une proba de " << proba << " en sachant qu'il faut entre " << i.second.first << " et " << i.second.second << endl;
                     if(proba >= i.second.first && proba < i.second.second){
                         voisin = i.first;
                         break;
@@ -72,29 +73,6 @@ public:
         }
         return s_min;
     }
-
-    void trouverVoisin(Solution* s){
-        random_device rd;
-        uniform_int_distribution<int> t(0, 1);
-        int r = t(rd);
-        if(r == 0){
-            echangeClients(s);
-        }else{
-            insertionClient(s);
-        }
-    }
-
-private:
-    void echangeClients(Solution* s){
-        auto *ve = new VoisinEchange();
-        ve->VoisinAleatoire(s);
-    }
-
-    void insertionClient(Solution* s){
-        auto *ve = new VoisinInsertion();
-        ve->VoisinAleatoire(s);
-    }
-
 };
 
 #endif //OPTIMISATION_RECUIT_H

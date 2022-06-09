@@ -192,7 +192,9 @@ public:
     }
 
     void inversion(int tournee, int c1, int c2){
-        this->getTournee(tournee).inversion(c1, c2);
+        distance -= tournees[tournee].getDistanceHeuristique();
+        tournees[tournee].inversion(c1, c2);
+        distance += tournees[tournee].getDistanceHeuristique();
     }
 
     int getNbClients(){

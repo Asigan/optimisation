@@ -10,8 +10,6 @@
 
 using namespace std;
 
-
-
 class VoisinInsertion : public TypeVoisin{
 public:
     using TypeVoisin::TypeVoisin;
@@ -19,8 +17,10 @@ public:
     VoisinsManager VoisinAleatoire(Solution* s);
 
     VoisinsManager getVoisin(Solution* s);
+
     VoisinsManager generateVoisins(Solution* s) override;
-    int nbVoisins() override;
+
+    int nbVoisins(Solution* s) override;
 
     size_t getHash() const;
 

@@ -1,15 +1,14 @@
 //
 // Created by titou on 27/05/2022.
 //
-
 #include "VoisinInsertion.h"
 #include "Solution.h"
 #include "ClientTournee.h"
 #include "VoisinsManager.h"
+#include <cmath>
 
 VoisinsManager VoisinInsertion::VoisinAleatoire(Solution* s) {
     int t1, t2;
-    cout << "Insertion" << endl;
     // On choisit deux tournées aléatoires
     random_device rd;
     uniform_int_distribution<int> t(0, s->getNbTournees() - 1);
@@ -50,8 +49,20 @@ VoisinsManager VoisinInsertion::generateVoisins(Solution* s) {
     }
     return res;
 }
-int VoisinInsertion::nbVoisins() {
-    return 20;
+int VoisinInsertion::nbVoisins(Solution* s) {
+    int nbTournees = s->getNbTournees();
+    int nbClients = s->getNbClients() - nbTournees; // On prend pas en compte le dépôt
+    int nbEchangeIntra = 0, nbEchangeInter = 0;
+
+    for(Tournee t : s->getTournees()){
+        int tailleTournee = t.returnTournee().size() - 1; // On enlève le dépôt
+        // Echanges inter
+        nbEchangeInter += tailleTournee * (nbClients-tailleTournee + nbTournees-1);
+
+        // Echanges intra
+        nbEchangeIntra += pow(tailleTournee - 1, 2);
+    }
+    return nbEchangeInter + nbEchangeIntra;
 }
 
 size_t VoisinInsertion::getHash() const{

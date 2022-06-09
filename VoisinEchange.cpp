@@ -9,7 +9,6 @@
 VoisinEchange::VoisinEchange(int c1, int c2) : TypeVoisin(c1<c2?c1:c2, c1<c2?c2:c1){ }
 VoisinsManager VoisinEchange::VoisinAleatoire(Solution* s){
     int t1, t2;
-    cout << "Echange" << endl;
     // On choisit deux tournées aléatoires
     random_device rd;
     uniform_int_distribution<int> t(0, s->getNbTournees()-1);
@@ -51,8 +50,24 @@ VoisinsManager VoisinEchange::generateVoisins(Solution* s) {
     }
     return res;
 }
-int VoisinEchange::nbVoisins(){
-    return 10;
+int VoisinEchange::nbVoisins(Solution* s){
+    int nbClients = s->getNbClients() - s->getNbTournees(); // On prend pas en compte le dépôt
+    int nbEchangeIntra = 0, nbEchangeInter = 0;
+
+    for(Tournee t : s->getTournees()){
+        int tailleTournee = t.returnTournee().size() - 1; // On enlève le dépôt
+        // Echanges inter
+        nbClients -= tailleTournee;
+        nbEchangeInter += tailleTournee * nbClients;
+
+        // Echanges intra
+        if(tailleTournee == 1){
+            nbEchangeIntra ++; // Comme il est possible de faire un échange d'un client avec lui-même s'il est seul dans la tournée
+        }else {
+            nbEchangeIntra += (tailleTournee * (tailleTournee - 1)) / 2;
+        }
+    }
+    return nbEchangeInter + nbEchangeIntra;
 }
 
 size_t VoisinEchange::getHash() const {

@@ -2,20 +2,20 @@
 // Created by antho on 20/4/2022.
 //
 
-#ifndef OPTIMISATION_VOISINECHANGE_H
-#define OPTIMISATION_VOISINECHANGE_H
+#ifndef OPTIMISATION_VOISININVERSION_H
+#define OPTIMISATION_VOISININVERSION_H
 
 #include <random>
 #include "TypeVoisin.h"
 
 using namespace std;
 
-class VoisinEchange : public TypeVoisin{
+class VoisinInversion : public TypeVoisin{
 public:
-    VoisinEchange(): TypeVoisin(){}
+    VoisinInversion(): TypeVoisin(){}
 
     // op ternaires pour assurer que c1 est le plus petit (puisque symétrique)
-    VoisinEchange(int c1, int c2);
+    VoisinInversion(int c1, int c2);
 
     VoisinsManager VoisinAleatoire(Solution* s) override;
 
@@ -28,20 +28,17 @@ public:
     size_t getHash() const override;
 
 private:
-    VoisinsManager VoisinIntra(Solution* s, int t);
-
-
-    VoisinsManager VoisinInter(Solution* s, int t1, int t2);
+    VoisinsManager Voisin(Solution* s, int t);
 
 };
 template<>
-struct std::hash<VoisinEchange>
+struct std::hash<VoisinInversion>
 {
-    size_t operator()(const VoisinEchange& v) const
+    size_t operator()(const VoisinInversion& v) const
     {
         return v.getHash();
     }
 };
 
 
-#endif //OPTIMISATION_VOISINECHANGE_H
+#endif //OPTIMISATION_VOISININVERSION_H
