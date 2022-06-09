@@ -12,7 +12,7 @@ struct HashSolution{
 };
 class Tabou{
 public:
-    Solution algo(Solution* s, int n, int tailleListeTabou, VoisinsManager typeVoisinage){
+    Solution algo(Solution* s, int n, int tailleListeTabou, int tailleListeTaboueAlt, VoisinsManager typeVoisinage){
 
         auto start = std::chrono::steady_clock::now();
         std::chrono::duration<double> tempstotal;
@@ -43,7 +43,7 @@ public:
             tmp_sol = *s;
             for(auto ite = ite_pair.first; ite != ite_pair.second; ++ite) {
                 startinit = std::chrono::steady_clock::now();
-                if (!_listeTaboue.containsFromVM(*ite)){
+                if (!_listeTaboue.containsFromVM(*ite) && !_listeTaboueEmpecheBoucle.containsFromVM(*ite)){
                     endinit = std::chrono::steady_clock::now();
                     tempsif1cond += endinit - startinit;
                     //cout << "test de voisin" << to_string((*ite)->getHash()) << endl;
@@ -96,6 +96,10 @@ public:
             if(std::abs(s->getDistance() - bestValueIte) > 0.1){
                 cerr << "valeurs non concordantes" << endl;
             }
+            _listeTaboueEmpecheBoucle.transfertGroupeVoisins(bestMove);
+            while(_listeTaboueEmpecheBoucle.size() > tailleListeTaboueAlt){
+                _listeTaboueEmpecheBoucle.eraseLast();
+            }
             if(s->getDistance() >= initValue){
                 _listeTaboue.transfertGroupeVoisins(inverseMove);
                 while(_listeTaboue.size() > tailleListeTabou){
@@ -127,8 +131,9 @@ public:
         return bestSolution;
     }
 private:
-    unordered_set<Solution,  HashSolution> solutionsInterdites = unordered_set<Solution,  HashSolution>();
+    unordered_map<size_t, double> solutionsInterdites = unordered_map<size_t, double>();
     VoisinsManager _listeTaboue;
+    VoisinsManager _listeTaboueEmpecheBoucle = VoisinsManager();
     bool error_last_simu =false;
     VoisinsManager initVoisinage(Solution* s, VoisinsManager typeVoisinage){
         VoisinsManager ensembleVoisins;
@@ -138,9 +143,7 @@ private:
             VoisinsManager voisins = (*type_voisinage)->generateVoisins(s);
             ensembleVoisins.transfertGroupeVoisins(voisins);
         }
-
         return ensembleVoisins;
-
     }
     std::chrono::duration<double> tempsCreateVoisin;
     std::chrono::duration<double> tempsif;
@@ -153,8 +156,12 @@ private:
         double res = s->getDistance();
         auto endcrevoisin = std::chrono::steady_clock::now();
 
-        if(!voisin->getErrorLastMove() && solutionsInterdites.find(*s) != solutionsInterdites.end()){
-            res = std::numeric_limits<double>::max();
+        //if(!voisin->getErrorLastMove() && solutionsInterdites.find(*s) != solutionsInterdites.end()){
+        if(!voisin->getErrorLastMove()){
+            if(solutionsInterdites.find( s->getHash()) != solutionsInterdites.end()){
+                //&& std::abs(solutionsInterdites[hash]-s->getDistance())<0.01
+                res = std::numeric_limits<double>::max();
+            }
         }
         auto endif = std::chrono::steady_clock::now();
         tempsCreateVoisin += endcrevoisin - startcrevoisin;
@@ -187,8 +194,15 @@ private:
         for(auto ite = ite_pair_voisinsTabous.first; ite != ite_pair_voisinsTabous.second; ++ite){
             Solution sprime = s;
             VoisinsManager inverse = (*ite)->getVoisin(&sprime);
-            solutionsInterdites.insert(sprime);
+            solutionsInterdites.insert(make_pair(sprime.getHash(), sprime.getDistance()));
         }
+        auto ite_pair_voisinsTabousEB = _listeTaboueEmpecheBoucle.getIterator();
+        for(auto ite = ite_pair_voisinsTabousEB.first; ite != ite_pair_voisinsTabousEB.second; ++ite){
+            Solution sprime = s;
+            VoisinsManager inverse = (*ite)->getVoisin(&sprime);
+            solutionsInterdites.insert(make_pair(sprime.getHash(), sprime.getDistance()));
+        }
+
     }
 };
 #endif //OPTIMISATION_TABOU_H

@@ -219,16 +219,19 @@ public:
         std::size_t seed = successeurs.size();
         int cur = successeurs[0];
         while(cur != 0) {
-            cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
-            cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
-            cur = (cur >> 16) ^ cur;
+            // hash simplifié (mis en commentaire) pour rapidité
+            //cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
+            //cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
+            //cur = (cur >> 16) ^ cur;
             seed ^= cur + 0x9e3779b9 + (seed << 6) + (seed >> 2);
             cur = successeurs[cur];
         }
         return seed;
     }
 
-
+    int getSize(){
+        return successeurs.size();
+    }
     vector<Client> getClients(){
         return clients;
     }

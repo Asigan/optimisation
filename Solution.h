@@ -241,13 +241,19 @@ public:
     }
 
     size_t getHash() const{
-        std::size_t seed = tournees.size();
+        std::hash<int> inthasher;
+        std::hash<double> doublehasher;
+        std::size_t seed = inthasher(tournees.size());
+        std::size_t distance_seed = doublehasher(distance);
+        seed ^= distance_seed + 0x9e3779b9 + (seed<<6) + (seed>>2);
         for(auto tournee: tournees) {
-            size_t cur = tournee.getHash();
-            cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
-            cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
-            cur = (cur >> 16) ^ cur;
-            seed ^= cur + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+            seed ^= inthasher(tournee.getSize()) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+            seed ^= doublehasher(tournee.getDistanceHeuristique()) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+        //    size_t cur = tournee.getHash();
+        //    //cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
+        //    //cur = ((cur >> 16) ^ cur) * 0x45d9f3b;
+        //    cur = (cur >> 16) ^ cur;
+        //    seed ^= cur + 0x9e3779b9 + (seed << 6) + (seed >> 2);
         }
         return seed;
     }

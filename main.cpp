@@ -126,7 +126,7 @@ int main(int argc, char* args[]) {
 
 
     Tabou t;
-    Solution s_rep = t.algo(s, 100, 30, vm);
+    Solution s_rep = t.algo(s, 1000, 50,50, vm);
     cout << s_rep.toString() << endl;
     s_rep.checkSolution(clients);
     Interface i2 = Interface(clients);
