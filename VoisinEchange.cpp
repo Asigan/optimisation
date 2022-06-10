@@ -97,7 +97,7 @@ VoisinsManager VoisinEchange::VoisinIntra(Solution* s, int t){
         while ((i2 = c(rd)) == i1);
     }
     // On effectue l'opération de voisinage correspondant
-    s->echangeIntra(t, listeTournee[i1], listeTournee[i2]);
+    ERROR_LAST_MOVE = s->echangeIntra(t, listeTournee[i1], listeTournee[i2]);
     int ct1 = listeTournee[i1];
     int ct2 = listeTournee[i2];
 
@@ -131,7 +131,7 @@ VoisinsManager VoisinEchange::VoisinInter(Solution* s, int t1, int t2){
     }
 
     // On effectue l'opération de voisinage correspondant
-    s->echangeInter(t1, t2, listeTournee1[i1], listeTournee2[i2]);
+    ERROR_LAST_MOVE = s->echangeInter(t1, t2, listeTournee1[i1], listeTournee2[i2]);
 
     int ct1 = listeTournee1[i1];
     int ct2 = listeTournee2[i2];

@@ -120,11 +120,17 @@ int main(int argc, char* args[]) {
 
 
 
-    Tabou t;
-    Solution s_rep = t.algo(s, 1000, 50,50, vm);
-    cout << s_rep.toString() << endl;
-    s_rep.checkSolution(clients);
+   //Tabou t;
+   //Solution s_rep = t.algo(s, 1000, 50,50, vm);
+   //cout << s_rep.toString() << endl;
+   //s_rep.checkSolution(clients);
+
+
+    Recuit recuit;
+    Solution res = recuit.algo(s, 4, 75, 200, 0.8, vm);
+    cout << s->toString() << endl;
+    cout << "Poids post recuit: " << to_string(s->getDistance()) << endl;
     Interface i2 = Interface(clients);
-    i2.afficher(s_rep);
+    i2.afficher(res);
     return 0;
 }

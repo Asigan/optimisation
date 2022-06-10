@@ -83,7 +83,7 @@ VoisinsManager VoisinInversion::Voisin(Solution* s, int t){
         while ((i2 = c(rd)) == i1);
     }
     // On effectue l'opération de voisinage correspondant
-    s->inversion(t, listeTournee[i1], listeTournee[i2]);
+    ERROR_LAST_MOVE = s->inversion(t, listeTournee[i1], listeTournee[i2]);
     int ct1 = listeTournee[i1];
     int ct2 = listeTournee[i2];
 
