@@ -33,22 +33,11 @@ public:
             tmp_sol = *s;
             for(auto ite = ite_pair.first; ite != ite_pair.second; ++ite) {
                 if (!_listeTaboue.containsFromVM(*ite) && !_listeTaboueEmpecheBoucle.containsFromVM(*ite)){
-                    //cout << "test de voisin" << to_string((*ite)->getHash()) << endl;
-                    //cout << s->toString() << endl;
                     double testValue = testVoisin(s, (*ite));
 
                     if(error_last_simu){
-                        //cerr << "Mais tout va bien on a un backup" << endl;
                         // backup en cas d'erreur lors de la simulation des voisins
                         error_last_simu = false;
-                        *s = tmp_sol;
-                    }
-
-                    if(!(*s==tmp_sol)){
-                        cerr << "solution modifiee sans warning" << endl;
-                        cerr << to_string((*ite)->getHash())<< endl;
-                        cerr << s->toString() << endl;
-                        cerr << tmp_sol.toString() << endl;
                         *s = tmp_sol;
                     }
 
@@ -61,10 +50,6 @@ public:
                 }
             }
             *s = tmp_sol;
-            cout << "iteration :" << to_string(cmpt) << endl;
-            // cout << "Solution initiale" << endl;
-            // cout << s->toString() << endl;
-            // cout << to_string(s->getDistance()) << endl;
             VoisinsManager inverseMove;
             if(bestMove.size()>0){
                 auto move = bestMove.getFirstElement();
@@ -72,20 +57,8 @@ public:
             }
             else{
                 bestMove.addVoisin(TypeVoisin());
-                cerr << "Liste taboue trop grande, plus de voisins valides" << endl;
             }
 
-            // cout << "Solution finale" << endl;
-            cout << to_string(bestMove.getFirstElement()->getHash()) << endl;
-            cout << s->toString() << endl;
-            // cout << to_string(s->getDistance()) << endl;
-            // cout << "etat voisin : " << to_string(bestMove.getFirstElement()->getErrorLastMove()) << endl;
-            //cout << "tabou: " << to_string(_listeTaboue.size()) << endl << _listeTaboue.toString() << endl;
-            cout << initValue << endl;
-            cout << bestValueIte << endl;
-            if(std::abs(s->getDistance() - bestValueIte) > 0.1){
-                cerr << "valeurs non concordantes" << endl;
-            }
             _listeTaboueEmpecheBoucle.transfertGroupeVoisins(bestMove);
             while(_listeTaboueEmpecheBoucle.size() > tailleListeTaboueAlt){
                 _listeTaboueEmpecheBoucle.eraseLast();
@@ -104,7 +77,6 @@ public:
         }
         auto end = std::chrono::steady_clock::now();
         tempstotal = end-start;
-        cout << "temps total: " << tempstotal.count() << endl;
         return bestSolution;
     }
 private:
@@ -144,20 +116,10 @@ private:
             inverse.getFirstElement()->getVoisin(s);
             if(inverse.getFirstElement()->getErrorLastMove()){
                 error_last_simu = true;
-                cerr << to_string(voisin->getHash()) << endl;
-                cerr << to_string(inverse.getFirstElement()->getHash()) << endl;
-                cerr << s->toString() << endl;
-                cerr << "erreur importante: Solution modifiée pour simulation mais erreur en retour" << endl;
             }
         }
         if(nbTourneesInit != s->getNbTournees() || std::abs(distanceInit - s->getDistance()) > 0.0001){
             error_last_simu = true;
-            cerr << to_string(voisin->getHash()) << endl;
-            cerr << to_string(inverse.getFirstElement()->getHash()) << endl;
-            cerr <<"Nb tournees " <<  to_string(nbTourneesInit) << to_string(s->getNbTournees()) << endl;
-            cerr <<"Distance " <<  to_string(distanceInit) << to_string( s->getDistance()) << endl;
-            cerr << s->toString() << endl;
-            cerr << "erreur importante: Solution modifiée pour simulation mais male remise en etat init" << endl;
         }
 
         return res;

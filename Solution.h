@@ -8,6 +8,8 @@
 #include <chrono>
 #include "Tournee.h"
 #include <unordered_map>
+#include <random>
+
 using namespace std;
 class Solution{
 public:
@@ -18,7 +20,6 @@ public:
 
         double k = ((double)distribution(generator))/100.0; // coeff entre 1 et 2
         int nbCamions = floor(k * nbCamionsMin(clients))+1;
-        cout << to_string(k) << endl;
         for(int i=0; i<nbCamions; i++){
             tournees.push_back(Tournee(clients));
         }

@@ -1,6 +1,7 @@
 #include <iostream>
+#include <cstdio>
 #include <vector>
-#include <random>
+#include <chrono>
 #include "Reader.h"
 #include "Solution.h"
 #include "Interface.h"
@@ -15,122 +16,35 @@ using namespace std;
 int main(int argc, char* args[]) {
 
     Reader r = Reader();
-    std::vector<Client> clients = r.lectureFichier("..\\Tests\\A3205.txt");
-    Interface i = Interface(clients);
-    //Client c1 = Client(0, 1, 1 ,0);
-    //Client c2 = Client(1, 1, 2 ,20);
-    //Client c3 = Client(2, 2, 2 ,20);
-    //Client c4 = Client(3, 3, 2 ,20);
-    //Client c5 = Client(4, 4, 2 ,20);
-    //Client c6 = Client(5, 5, 2 ,20);
-    //Client c7 = Client(6, 1, 3 ,20);
-    //std::vector<Client> clients;
-    //clients.push_back(c1);
-    //clients.push_back(c2);
-    //clients.push_back(c3);
-    //clients.push_back(c4);
-    //clients.push_back(c5);
-    //clients.push_back(c6);
-    //clients.push_back(c7);
-    //clients.push_back(c8);
-    //clients.push_back(c9);
-    //clients.push_back(c10);
-    //clients.push_back(c11);
-    //clients.push_back(c12);
-    //clients.push_back(c13);
+    // Permet d'initialiser les pointeurs
+    auto clients = r.lectureFichier("..\\Tests\\A3205.txt");
+    Solution *sr = new Solution(clients);
+    Solution *st = new Solution(clients);
 
-    Solution* s = new Solution(clients);
-    cout << s->toString() << endl;
-    i.afficher(*s);
-    /*VoisinEchange ve = VoisinEchange();
-    cout << s->toString() << endl;
-    cout << "Poids: " << to_string(s->getDistance()) << endl;
-    auto ve_inverse = ve.VoisinAleatoire(s);
-    auto ve_inverse_node = ve_inverse.getFirstElement();
-    cout << to_string(ve_inverse_node->getHash()) << endl;
-    cout << s->toString() << endl;
-
-    VoisinsManager ve_doubleinverse = ve_inverse_node->getVoisin(s);
-    cout << s->toString() << endl;
-    cout << to_string(ve_doubleinverse.getFirstElement()->getHash()) << endl;
-    //cout << to_string((ve_doubleinverse.getFirstElement())== make_shared<VoisinEchange>(ve)) << endl;
-
-    Recuit recuit;
-    VoisinEchange* voisin = new VoisinEchange();
-    Solution res = recuit.algo(s, 1, 10, 100, 0.7, voisin);
-    cout << s->toString() << endl;
-    cout << "Poids post recuit: " << to_string(s->getDistance()) << endl;
-    delete voisin;
-    */
-    //Interface i = Interface(clients);
-    //i.afficher(*s);
     VoisinsManager vm;
     vm.addVoisin(VoisinEchange());
     vm.addVoisin(VoisinInsertion());
     vm.addVoisin(VoisinInversion());
-    //Solution s_test = Solution(clients);
-    //vector<Tournee> tournees;
-    //for(int i=0; i<3; i++){
-    //    tournees.push_back(Tournee(clients));
-    //}
-    //tournees[0].insert(4, 0);
-    //tournees[0].insert(5, 0);
-    //tournees[0].insert(1, 0);
-    //tournees[1].insert(6, 0);
-    //tournees[1].insert(3, 0);
-    //tournees[2].insert(2, 0);
-    //s_test.setTournees(tournees);
-    //cout << s_test.toString() << endl;
-    //VoisinsManager vm2;
-    //VoisinsManager vmtmp = VoisinInversion().generateVoisins(&s_test);
-    //vm2.transfertGroupeVoisins(vmtmp);
-    //cout << vm2.toString() << endl;
-    //VoisinEchange ve = VoisinEchange();
-    //VoisinInsertion vi = VoisinInsertion();
-    //auto vm2 = ve.generateVoisins(s);
-    //auto tmp = vi.generateVoisins(s);
-    //vm2.transfertGroupeVoisins(tmp);
-    //auto ite_pair = vm2.getIterator();
-    //for(auto ite= ite_pair.first; ite!=ite_pair.second; ++ite){
-    //    cout << to_string((*ite)->getHash()) << endl;
-    //    (*ite)->getVoisin(s);
-    //    cout << s->toString() << endl;
-    //    cout << "statutVoisin: " << (*ite)->getErrorLastMove() << endl;
-    //}
-    //vm2.getFirstElement()->getVoisin(s);
-
-    //Tournee t = Tournee(clients);
-    //t.insert(1,0);
-    //t.insert(2,0);
-    //t.insert(4,0);
-    //t.insert(7, 0);
-    //t.insert(9,0);
-    //Tournee t2 = Tournee(clients);
-    //t2.insert(11,0);
-    //t2.insert(15,0);
-    //t2.insert(31,0);
-    //vector<Tournee> tournees = vector<Tournee>();
-    //tournees.push_back(t);
-    //tournees.push_back(t2);
-    //s->setTournees(tournees);
-    //cout << s->toString() << endl;
-    //int tmp = s->insertionInter(1,0,31,0);
-    //cout << s->toString() << endl;
-    //cout << to_string(tmp) << endl;
-
-
-
-   //Tabou t;
-   //Solution s_rep = t.algo(s, 1000, 50,50, vm);
-   //cout << s_rep.toString() << endl;
-   //s_rep.checkSolution(clients);
-
-
     Recuit recuit;
-    Solution res = recuit.algo(s, 4, 75, 200, 0.8, vm);
-    cout << s->toString() << endl;
-    cout << "Poids post recuit: " << to_string(s->getDistance()) << endl;
-    Interface i2 = Interface(clients);
-    i2.afficher(res);
+    Tabou tabou;
+
+    vector<string> noms_fichier = {"A3205", "A3305", "A3306", "A3405", "A3605", "A3705", "A3706", "A3805", "A3905",
+                                   "A3906", "A4406", "A4506", "A4507", "A4607", "A5307", "A5407", "A5509", "A6009",
+                                   "A6109", "A6208", "A6310", "A6409", "A6509", "A6909", "A8010", "c101", "c201", "r101"};
+
+    for(auto nom_fichier : noms_fichier) {
+        clients = r.lectureFichier("..\\Tests\\" + nom_fichier + ".txt");
+        Solution s = Solution(clients);
+        *st = s;
+        double dr = 0;
+        for(int i = 0; i<10; i++) {
+            *sr = s;
+            Solution resr = recuit.algo(sr, 100, 28, 1000, 0.9, vm);
+            dr += resr.getDistance();
+        }
+        Solution rest = tabou.algo(st, 1000, 30, 20, vm);
+        cout << "Fichier " << nom_fichier << " : " << endl;
+        cout << "Recuit : " << to_string(dr/10) << " / Tabou : " << to_string(rest.getDistance()) << endl;
+    }
     return 0;
 }
